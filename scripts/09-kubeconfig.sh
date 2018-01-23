@@ -4,7 +4,7 @@ source 00-variables.sh
 
 set -e
 
-cd /opt/ibm-cloud-private-2.1.0
+cd /opt/ibm-cloud-private-${INCEPTION_VERSION}
 
 # Get kubectl
 sudo docker run -e LICENSE=accept --net=host -v /usr/local/bin:/data ibmcom/kubernetes${INCEPTION_TAG}:v1.7.3 cp /kubectl /data
