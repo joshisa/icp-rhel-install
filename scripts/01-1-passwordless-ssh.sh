@@ -3,6 +3,15 @@
 
 source ./00-variables.sh
 
+# Start SSH Agent
+if [ "${OS}" == "rhel" ]; then
+   echo "RHEL Detected ..."
+else
+  eval "$(ssh-agent -s)"
+  ssh-add "${SSH_KEY}"
+  ssh-add -l
+fi
+
 # Generate RSA key
 ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -N ""
 

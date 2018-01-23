@@ -3,10 +3,11 @@
 # Get the variables
 source 00-variables.sh
 
-sudo docker pull ibmcom/icp-inception${INCEPTION_TAG}:2.1.0
+sudo service docker start
+sudo docker pull ibmcom/icp-inception${INCEPTION_TAG}:${INCEPTION_VERSION}
 
-sudo mkdir /opt/ibm-cloud-private-2.1.0
-sudo chown $USER /opt/ibm-cloud-private-2.1.0
-cd /opt/ibm-cloud-private-2.1.0
+sudo mkdir /opt/ibm-cloud-private-${INCEPTION_VERSION}
+sudo chown $USER /opt/ibm-cloud-private-${INCEPTION_VERSION}
+cd /opt/ibm-cloud-private-${INCEPTION_VERSION}
 
-sudo docker run -v $(pwd):/data -e LICENSE=accept ibmcom/icp-inception${INCEPTION_TAG}:2.1.0 cp -r cluster /data
+sudo docker run -v $(pwd):/data -e LICENSE=accept ibmcom/icp-inception${INCEPTION_TAG}:${INCEPTION_VERSION} cp -r cluster /data
