@@ -17,3 +17,4 @@ echo "One stop shop script for deploying ICP if you have line-of-sight to all IP
 ./07-configure-installer.sh
 ./08-install.sh
 ./09-kubeconfig.sh
+./waiter.sh
