@@ -45,6 +45,12 @@ if [ "${ARCH}" != "x86_64" ]; then
   export INCEPTION_TAG="-${ARCH}"
 fi
 
+# Get OS ID
+if [ -f /etc/os-release ]; then
+  source /etc/os-release
+  export OS="${ID}"
+fi
+
 #echo ${WORKER_HOSTNAMES}
 #export ARRAY_IDX=${!WORKER_IPS[*]}
 #for index in $ARRAY_IDX;

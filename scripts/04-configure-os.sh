@@ -4,7 +4,9 @@
 source 00-variables.sh
 
 # Disable SELinux
-sudo setenforce 0
+if [ "${OS}" == "rhel" ]; then
+  sudo setenforce 0
+fi
 
 # Set VM max map count (see max_map_count https://www.kernel.org/doc/Documentation/sysctl/vm.txt)
 sudo sysctl -w vm.max_map_count=262144
@@ -19,7 +21,9 @@ sudo service docker start
 
 for ((i=0; i < $NUM_WORKERS; i++)); do
   # Disable SELinux
-  ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo setenforce 0
+  if [ "${OS}" == "rhel" ]; then
+    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo setenforce 0
+  fi
 
   # Set VM max map count
   ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo sysctl -w vm.max_map_count=262144
