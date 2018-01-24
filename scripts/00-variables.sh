@@ -24,7 +24,7 @@
 # ----------------------------------------------------------------------------------------------------\\
 
 export SSH_KEY=/path/to/key
-export SSH_USER=username
+export SSH_USER=user
 
 export PUBLIC_IP=x.x.x.x
 export MASTER_IP=x.x.x.x
@@ -52,6 +52,11 @@ if [ -f /etc/os-release ]; then
   source /etc/os-release
   export OS="${ID}"
 fi
+
+# Local Registry Pull User
+export user=admin
+export pw=admin
+export email=foo@foo.com
 
 #export ARRAY_IDX=${!WORKER_IPS[*]}
 #for index in $ARRAY_IDX;

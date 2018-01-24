@@ -4,9 +4,9 @@ set -e
 set -u
 #set -x
 
+clear
 echo "One stop shop script for deploying ICP if you have line-of-sight to all IPs for the cluster"
-./00-variables.sh
-./01-update-hosts.sh
+./01-0-update-hosts.sh
 ./01-1-passwordless-ssh.sh
 ./01-2-bind-mounts.sh
 ./02-ssh-setup.sh
@@ -16,4 +16,6 @@ echo "One stop shop script for deploying ICP if you have line-of-sight to all IP
 ./06-get-installer.sh
 ./07-configure-installer.sh
 ./08-install.sh
-./09-kubeconfig.sh
+./09-0-kubeconfig.sh
+./09-1-setup-image-reg-pulls.sh
+./10-waiter.sh
