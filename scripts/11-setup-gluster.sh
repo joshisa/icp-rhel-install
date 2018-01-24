@@ -8,7 +8,7 @@ export NUM_PVS_RWO_RECYCLE=5
 export NUM_PVS_RWX_RECYCLE=5
 export mode="create" #"delete"
 
-export GLUSTER_CLUSTER_IPS=("x.x.x.x" "x.x.x.x" "x.x.x.x")
+export GLUSTER_CLUSTER_IPS=("10.10.25.13" "10.10.25.14" "10.10.25.15")
 export GLUSTER_CLUSTER_NAME="glusterfs-cluster"
 export GLUSTER_CLUSTER_VOL="gvol0"
 export NUM_GLUSTER_BRICKS=${#GLUSTER_CLUSTER_IPS[@]}
