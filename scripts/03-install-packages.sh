@@ -30,7 +30,7 @@ else # ubuntu
   # https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
   # sudo apt-get install -y linux-image-extra-$(uname -r) linux-image-extra-virtual
   sudo apt-get update
-  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common ntpdate
+  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common ntpdate parallel
   curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
   sudo apt-key fingerprint 0EBFCD88
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
