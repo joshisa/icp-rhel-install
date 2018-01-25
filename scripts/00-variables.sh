@@ -25,6 +25,10 @@
 
 export SSH_KEY=/path/to/key
 export SSH_USER=ubuntu
+export ICPUSER=admin
+export ICPPW=admin
+export ICPEMAIL=icp@foo.com
+
 
 export PUBLIC_IP=x.x.x.x
 export MASTER_IP=x.x.x.x
