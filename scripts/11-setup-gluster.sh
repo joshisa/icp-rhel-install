@@ -3,6 +3,9 @@
 set -e
 set -u
 
+# Get the variables
+source 00-variables.sh
+
 export NUM_PVS_START_NUM=0
 export NUM_PVS_RWO_RECYCLE=5
 export NUM_PVS_RWX_RECYCLE=5
@@ -12,6 +15,20 @@ export GLUSTER_CLUSTER_IPS=("x.x.x.x" "x.x.x.x" "x.x.x.x")
 export GLUSTER_CLUSTER_NAME="glusterfs-cluster"
 export GLUSTER_CLUSTER_VOL="gvol0"
 export NUM_GLUSTER_BRICKS=${#GLUSTER_CLUSTER_IPS[@]}
+
+if [ "${OS}" == "rhel" ]; then
+    echo "TODO:  Need to install glusterfs-client on RHEL"
+else
+  sudo apt-get install -y glusterfs-client
+fi
+
+for ((i=0; i < $NUM_WORKERS; i++)); do
+  if [ "${OS}" == "rhel" ]; then
+    echo "TODO:  Need to install glusterfs-client on RHEL"
+  else
+    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-get install -y glusterfs-client
+  fi
+done
 
 # Create Endpoint Based on Gluster Cluster IPs
 endpoint_yaml=$(
