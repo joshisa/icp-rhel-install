@@ -17,14 +17,14 @@ export GLUSTER_CLUSTER_VOL="gvol0"
 export NUM_GLUSTER_BRICKS=${#GLUSTER_CLUSTER_IPS[@]}
 
 if [ "${OS}" == "rhel" ]; then
-    echo "TODO:  Need to install glusterfs-client on RHEL"
+    yum install -y glusterfs-client
 else
   sudo apt-get install -y glusterfs-client
 fi
 
 for ((i=0; i < $NUM_WORKERS; i++)); do
   if [ "${OS}" == "rhel" ]; then
-    echo "TODO:  Need to install glusterfs-client on RHEL"
+    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} yum install -y glusterfs-client
   else
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-get install -y glusterfs-client
   fi
