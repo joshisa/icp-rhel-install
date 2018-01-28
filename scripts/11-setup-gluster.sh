@@ -9,6 +9,7 @@ source 00-variables.sh
 export NUM_PVS_START_NUM=0
 export NUM_PVS_RWO_RECYCLE=5
 export NUM_PVS_RWX_RECYCLE=5
+export STORAGE_SIZE="5Gi"
 export mode="create" #"delete"
 
 export GLUSTER_CLUSTER_IPS=("x.x.x.x" "x.x.x.x" "x.x.x.x")
@@ -75,7 +76,7 @@ for ((i=$NUM_PVS_START_NUM; i < $NUM_PVS_RWO_RECYCLE; i++)); do
     accessModes:
     - ReadWriteOnce
     capacity:
-      storage: 5Gi
+      storage: ${STORAGE_SIZE}
     glusterfs:
       endpoints: ${GLUSTER_CLUSTER_NAME}
       path: ${GLUSTER_CLUSTER_VOL}
@@ -95,7 +96,7 @@ for ((i=$NUM_PVS_START_NUM; i < $NUM_PVS_RWX_RECYCLE; i++)); do
     accessModes:
     - ReadWriteMany
     capacity:
-      storage: 5Gi
+      storage: ${STORAGE_SIZE}
     glusterfs:
       endpoints: ${GLUSTER_CLUSTER_NAME}
       path: ${GLUSTER_CLUSTER_VOL}
