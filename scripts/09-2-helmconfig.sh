@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+#  Purpose
+#  This scripts sets up the Helm CLI
+#
 
 set -e
 set -u
