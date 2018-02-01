@@ -12,5 +12,5 @@ tar -zxvf /tmp/helm.tar.gz -C /tmp
 sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
 chmod +x /usr/local/bin/helm
 
-helm init —upgrade
+helm init --upgrade
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
