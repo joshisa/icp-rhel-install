@@ -18,4 +18,4 @@ echo "One stop shop script for deploying ICP if you have line-of-sight to all IP
 ./09-0-kubeconfig.sh
 ./09-1-setup-image-reg-pulls.sh
 ./09-2-helmconfig.sh
-./10-waiter.sh
+./10-waiter.sh kube-system
