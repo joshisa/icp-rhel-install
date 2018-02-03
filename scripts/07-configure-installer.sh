@@ -23,3 +23,5 @@ echo "${MASTER_IP}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cl
 # Add line for external IP in config
 echo "cluster_access_ip: ${PUBLIC_IP}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml
 echo "proxy_access_ip: ${PUBLIC_IP}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml
+echo "kibana_install: true" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml
+echo "ingress_enabled: true" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml
