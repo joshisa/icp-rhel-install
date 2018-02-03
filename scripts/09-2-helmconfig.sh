@@ -14,3 +14,5 @@ chmod +x /usr/local/bin/helm
 
 helm init --upgrade
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
+helm repo add ibmcase https://raw.githubusercontent.com/ibm-cloud-architecture/refarch-cloudnative-kubernetes/master/docs/charts/bluecompute-ce
+helm repo add ibmcase-spring https://raw.githubusercontent.com/ibm-cloud-architecture/refarch-cloudnative-spring/master/docs/charts/
