@@ -20,7 +20,7 @@ docker build -t mycluster.icp:8500/default/dotnetappprod:demo /tmp/dotnet/dotnet
 docker push mycluster.icp:8500/default/dotnetappprod:demo
 kubectl create -f /tmp/dotnet/prod-dot-net-kube.yml
 
-./10-waiter.sh default
+./10-waiter.sh pods default
 
 PORT=$(kubectl get svc kube-dotnet -n default -o jsonpath='{.spec.ports[*].nodePort}')
 echo ""

@@ -6,7 +6,8 @@ set -u
 K8S_POLL_INTERVAL=7 # Number of seconds until script polls cluster again.
 K8S_THRESHOLD=20
 K8S_DEBUG=false; # Detailed debugging
-K8S_NAMESPACE=$1
+K8S_RESOURCE_TYPE=$1
+K8S_NAMESPACE=$2
 
 # -- Set working environment variables ----------------------------------------
 
@@ -22,7 +23,7 @@ try=1
 while [[ "${jobFinished}" == false ]]
 do
     echo "Polling ICP pod deployments within namespace ${K8S_NAMESPACE}.  Poll #${try}."
-    resultStatus=$(kubectl get pods -n ${K8S_NAMESPACE}| grep "0/1" | wc -l)
+    resultStatus=$(kubectl get $K8S_RESOURCE_TYPE -n ${K8S_NAMESPACE}| grep "0/1" | wc -l)
     ((try++))
     if [ "$resultStatus" -eq "0" ]; then
       driverStatus="FINISHED"
