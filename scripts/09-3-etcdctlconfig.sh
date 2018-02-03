@@ -6,6 +6,7 @@
 
 set -e
 set -u
+shopt -s expand_aliases
 
 ETCDCTLVERSION=3.3.0
 curl -Lo /tmp/etcdctl.tar.gz https://github.com/coreos/etcd/releases/download/v${ETCDCTLVERSION}/etcd-v${ETCDCTLVERSION}-linux-amd64.tar.gz
@@ -36,3 +37,8 @@ echo ""
 echo "Result:"
 etcdctl --cert-file=/etc/cfc/conf/etcd/client.pem --key-file=/etc/cfc/conf/etcd/client-key.pem --ca-file=/etc/cfc/conf/etcd/ca.pem --endpoints=$ip member list
 echo ""
+echo "PROTIP:  Create an alias within your bash shell by copying and pasting the 2 lines below"
+echo "====="
+echo '         echo 'alias etcdctl=\\\"etcdctl --cert-file=/etc/cfc/conf/etcd/client.pem --key-file=/etc/cfc/conf/etcd/client-key.pem --ca-file=/etc/cfc/conf/etcd/ca.pem --endpoints=${ip}\\\"' >> ~/.bashrc'
+echo "         source ~/.bashrc"
+echo "====="
