@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #  Purpose
-#  This scripts sets up the Helm CLI
+#  This scripts sets up the ETCDCTL CLI
+#  Tested on Ubuntu 16.04 x86 system.
 #
 
 set -e
