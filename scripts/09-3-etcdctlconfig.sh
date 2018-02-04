@@ -39,6 +39,6 @@ etcdctl --cert-file=/etc/cfc/conf/etcd/client.pem --key-file=/etc/cfc/conf/etcd/
 echo ""
 echo "PROTIP:  Create an alias within your bash shell by copying and pasting the 2 lines below"
 echo "====="
-echo '         echo 'alias etcdctl=\\\"etcdctl --cert-file=/etc/cfc/conf/etcd/client.pem --key-file=/etc/cfc/conf/etcd/client-key.pem --ca-file=/etc/cfc/conf/etcd/ca.pem --endpoints=${ip}\\\"' >> ~/.bashrc'
-echo "         source ~/.bashrc"
+echo '         echo 'alias etcdctl=\\\"etcdctl --cert-file=/etc/cfc/conf/etcd/client.pem --key-file=/etc/cfc/conf/etcd/client-key.pem --ca-file=/etc/cfc/conf/etcd/ca.pem --endpoints=${ip}\\\"' >> ~/.bash_aliases'
+echo "         source ~/.bash_aliases"
 echo "====="
