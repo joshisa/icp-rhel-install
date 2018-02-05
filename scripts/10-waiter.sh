@@ -8,6 +8,7 @@ K8S_THRESHOLD=20
 K8S_DEBUG=false; # Detailed debugging
 K8S_RESOURCE_TYPE=$1
 K8S_NAMESPACE=$2
+TEXT=$3
 
 # -- Set working environment variables ----------------------------------------
 
@@ -23,7 +24,7 @@ try=1
 while [[ "${jobFinished}" == false ]]
 do
     echo "Polling ICP pod deployments within namespace ${K8S_NAMESPACE}.  Poll #${try}."
-    resultStatus=$(kubectl get $K8S_RESOURCE_TYPE -n ${K8S_NAMESPACE}| grep "0/1" | wc -l)
+    resultStatus=$(kubectl get $K8S_RESOURCE_TYPE -n ${K8S_NAMESPACE}| grep ${TEXT} | wc -l)
     ((try++))
     if [ "$resultStatus" -eq "0" ]; then
       driverStatus="FINISHED"
@@ -36,11 +37,11 @@ do
     fi
     case ${driverStatus} in
         FINISHED)
-            echo "All ICP pods within namespace ${K8S_NAMESPACE} are now ready."
+            echo "All ICP ${K8S_RESOURCE_TYPE} within namespace ${K8S_NAMESPACE} are now ready."
             jobFinished=true
             ;;
         UNREADY)
-            echo "${resultStatus} ICP pods within namespace ${K8S_NAMESPACE} are still UNREADY"
+            echo "${resultStatus} ICP ${K8S_RESOURCE_TYPE} within namespace ${K8S_NAMESPACE} are still UNREADY"
             echo "Next poll in ${K8S_POLL_INTERVAL} seconds."
             sleep ${K8S_POLL_INTERVAL}
             jobFinished=false
@@ -48,7 +49,7 @@ do
         *)
             IS_JOB_ERROR=true
             echo "Hmmmm .... something is really wrong with your K8S cluster"
-            echo "${resultStatus} ICP pods within namespace ${K8S_NAMESPACE} are still UNREADY"
+            echo "${resultStatus} ICP ${K8S_RESOURCE_TYPE} within namespace ${K8S_NAMESPACE} are still UNREADY"
             jobFinished=true
             jobFailed=true
             ;;
