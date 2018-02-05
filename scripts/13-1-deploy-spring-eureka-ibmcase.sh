@@ -10,7 +10,10 @@ source 00-variables.sh
 rm -rf /tmp/spring
 mkdir -p /tmp/spring
 
-git clone https://github.com/ibm-cloud-architecture/refarch-cloudnative-spring.git /tmp/spring
+# git clone https://github.com/ibm-cloud-architecture/refarch-cloudnative-spring.git /tmp/spring
+# Temporarily using patched fork for rabbitmq erlang issue until PR accepted
+git clone https://github.com/joshisa/refarch-cloudnative-spring.git /tmp/spring
+
 #AVAILABLE_PV=$(kubectl get pv | grep 20Gi | grep Available | wc -l)
 AVAILABLE_PV=$(kubectl get pv -o wide | grep "20Gi" | grep "Available" | grep "RWO" | grep "default" | wc -l)
 
