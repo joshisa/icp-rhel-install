@@ -1,7 +1,7 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------------------------------\\
 # Description:
-#   A basic reset of the cluster and its workers for RHEL 7.4 or Ubuntu 16.04
+#   A basic hardening script to improve resilience of cluster reboots for RHEL 7.4 or Ubuntu 16.04
 # ----------------------------------------------------------------------------------------------------\\
 # Get the variables
 source 00-variables.sh
@@ -11,28 +11,11 @@ READINESS_THRESHOLD=20
 READINESS_PERIOD=20
 
 echo "To help improve the reliability of ICP across system restart, two strategies are employed:"
-echo "     1.  Update the ICP-DS pod to be more patient with its readiness probe (important in slow network envs)"
-echo "     2.  Update the calico default component versions to help improve its instantiation startup time"
-
-echo "Employing Strategy 1:  Reapplying icp-ds template with updated readiness probe thresholds set to ${READINESS_THRESHOLD}"
-
-CURRENTFAILURESETTING=$(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}')
-CURRENTPERIODSETTING=$(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.periodSeconds}')
-echo "Your current ICP-DS readinessProbe failureThreshold is set to "${CURRENTFAILURESETTING}""
-echo "Your current ICP-DS readinessProbe periodSeconds is set to "${CURRENTPERIODSETTING}""
-
-
-kubectl patch statefulset/icp-ds -n kube-system -p '{"spec":{"template":{"spec":{"containers":[{"name":"icp-ds", "readinessProbe":{"failureThreshold":'"${READINESS_THRESHOLD}"',"periodSeconds":'"${READINESS_PERIOD}"'}}]}}}}'
-./10-waiter.sh "statefulset" "kube-system" "0/1"
-echo ""
-echo "Executing kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}'"
-echo "Congrats! Your statefulset failureThreshold setting is now updated to $(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}')"
-echo ""
-echo "Executing kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.periodSeconds}'"
-echo "Congrats!  Your statefulset periodSeconds setting is now update to $(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.periodSeconds}')"
+echo "     1.  Update the calico default component versions to help improve its instantiation startup time"
+echo "     2.  Update the ICP-DS pod to be more patient with its readiness probe (important in slow network envs)"
 
 echo ""
-echo "Employing Strategy 2:  Updating calico components for node, cni and kube-controllers to align with the Calico 2.6.7 release"
+echo "Employing Strategy 1:  Updating calico components for node, cni and kube-controllers to align with the Calico 2.6.7 release"
 echo "    Please refer to https://docs.projectcalico.org/v2.6/releases/ for more details"
 
 # For goodness, let's make sure that the RollingUpdate strategy is in place.
@@ -45,7 +28,7 @@ if [ "$STRATEGY" = "RollingUpdate" ]; then
   kubectl set image ds/calico-node-amd64 -n kube-system calico-node-amd64=calico/node:v2.6.7 install-cni=calico/cni:v1.11.2
   echo "    Updating calico-policy-controller deployment image version ..."
   kubectl set image deploy/calico-policy-controller -n kube-system calico-policy-controller=calico/kube-controllers:v1.0.3
-  echo "Sweet! Give your system a few minutes to settle into its new surrounding.  After all pods are running, your cluster should be in a more resilient position for machine restarts"
+  echo "Sweet! Your calico components have been upgraded"
 else
   # Err out and state that the deploy appears to be older than 1.6 and cannot be ICP
   echo "Hmmmmmmm.    Your rolling update strategy does not appear to be set to RollingUpdate for the calico daemonsets and deployment."
@@ -56,3 +39,30 @@ else
   echo ""
   exit 1
 fi
+
+echo "Restarting cluster ..."
+./12-0-reset-cluster.sh
+./10-waiter.sh "pods" "kube-system" "0/1"
+
+echo ""
+echo "Employing Strategy 2:  Reapplying icp-ds template with updated readiness probe thresholds set to ${READINESS_THRESHOLD}"
+
+CURRENTFAILURESETTING=$(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}')
+CURRENTPERIODSETTING=$(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.periodSeconds}')
+echo "Your current ICP-DS readinessProbe failureThreshold is set to "${CURRENTFAILURESETTING}""
+echo "Your current ICP-DS readinessProbe periodSeconds is set to "${CURRENTPERIODSETTING}""
+
+
+kubectl patch statefulset/icp-ds -n kube-system -p '{"spec":{"template":{"spec":{"containers":[{"name":"icp-ds", "readinessProbe":{"failureThreshold":'"${READINESS_THRESHOLD}"',"periodSeconds":'"${READINESS_PERIOD}"'}}]}}}}'
+./10-waiter.sh "statefulset" "kube-system" "0/1"
+
+echo ""
+echo "Executing kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}'"
+echo "Congrats! Your statefulset failureThreshold setting is now updated to $(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}')"
+echo ""
+echo "Executing kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.periodSeconds}'"
+echo "Congrats!  Your statefulset periodSeconds setting is now update to $(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.periodSeconds}')"
+echo "Sweet! Give your system a few minutes to settle into its new surrounding.  After all pods are running, your cluster should be in a more resilient position for machine restarts"
+echo "PROTIP:  the icp-ds stateful set is a critical component.  The pod that it manages can get stuck in a perpetual terminating state.  To help resolve, execute kubectl delete po/icp-ds-0 --grace-period=0 --force"
+./10-waiter.sh "pods" "kube-system" "0/1"
+echo "Happy Kubing!"
