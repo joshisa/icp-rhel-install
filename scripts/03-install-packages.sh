@@ -19,10 +19,10 @@ else
 fi
 
 if [ "${OS}" == "rhel" ]; then
-  sudo yum install -y yum-utils device-mapper-persistent-data lvm2 parallel
+  sudo yum install -y yum-utils device-mapper-persistent-data lvm2 parallel haveged rng-tools
   sudo yum-config-manager -y --add-repo https://download.docker.com/linux/centos/docker-ce.repo
   sudo yum install -y docker-ce
-
+  systemctl enable haveged.service && systemctl start haveged.service
   sudo yum install -y python-setuptools
   sudo easy_install pip
 else # ubuntu
@@ -30,7 +30,7 @@ else # ubuntu
   # https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
   # sudo apt-get install -y linux-image-extra-$(uname -r) linux-image-extra-virtual
   sudo apt-get update
-  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common ntpdate parallel
+  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common ntpdate parallel haveged rng-tools
   curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
   sudo apt-key fingerprint 0EBFCD88
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -44,6 +44,8 @@ else # ubuntu
 EONG
   echo "Restarting docker ..."
   sudo service docker restart
+  # Really important in virtualized environments to have enough entropy_avail
+  sudo systemctl enable haveged.service && sudo systemctl start haveged.service
   # Useful if we need Python 2.7
   # sudo apt-get install -y python-setuptools
   # Let's use the default Python3 env
@@ -62,16 +64,17 @@ for ((i=0; i < $NUM_WORKERS; i++)); do
   # Install docker & python on worker
   if [ "${OS}" == "rhel" ]; then
     echo "Installing for RHEL ...."
-    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo yum install -y yum-utils device-mapper-persistent-data lvm2 haveged rng-tools
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo yum-config-manager -y --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo yum install -y docker-ce
+    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudosystemctl enable haveged.service && systemctl start haveged.service
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo yum install -y python-setuptools
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo easy_install pip
   else # ubuntu
     echo "Installing for Ubuntu ...."
     # ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-get install -y linux-image-extra-$(uname -r) linux-image-extra-virtual
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-get update
-    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common ntpdate
+    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common ntpdate haveged rng-tools
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} "curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -"
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-key fingerprint 0EBFCD88
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo add-apt-repository "\"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable\""
@@ -81,6 +84,8 @@ for ((i=0; i < $NUM_WORKERS; i++)); do
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo gpasswd -a ubuntu docker
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} /usr/bin/newgrp docker <<EONG
 EONG
+    # Really important to have high amount of entropy available.  
+    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo systemctl enable haveged.service && sudo systemctl start haveged.service
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo service docker restart
     # ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-get install -y python-setuptools
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo ln -sf /usr/bin/python3 /usr/bin/python

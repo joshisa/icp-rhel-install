@@ -23,6 +23,28 @@
 #    - https://www.ibm.com/developerworks/community/wikis/home?lang=en#!/wiki/W1559b1be149d_43b0_881e_9783f38faaff/page/Connect
 # ----------------------------------------------------------------------------------------------------\\
 
+##########
+# Colors##
+##########
+Green='\x1B[0;32m'
+Red='\x1B[0;31m'
+Yellow='\x1B[0;33m'
+Cyan='\x1B[0;36m'
+no_color='\x1B[0m' # No Color
+beer='\xF0\x9f\x8d\xba'
+delivery='\xF0\x9F\x9A\x9A'
+beers='\xF0\x9F\x8D\xBB'
+eyes='\xF0\x9F\x91\x80'
+cloud='\xE2\x98\x81'
+crossbones='\xE2\x98\xA0'
+litter='\xF0\x9F\x9A\xAE'
+fail='\xE2\x9B\x94'
+harpoons='\xE2\x87\x8C'
+tools='\xE2\x9A\x92'
+present='\xF0\x9F\x8E\x81'
+#############
+
+
 export SSH_KEY=/path/to/key
 export SSH_USER=ubuntu
 export ICPUSER=admin
