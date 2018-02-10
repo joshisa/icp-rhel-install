@@ -18,4 +18,9 @@ echo "One stop shop script for deploying ICP if you have line-of-sight to all IP
 ./09-0-kubeconfig.sh
 ./09-1-setup-image-reg-pulls.sh
 ./09-2-helmconfig.sh
+./09-3-etcdctlconfig.sh
+./09-4-clibluemixconfig.sh
+./09-5-calicoctlconfig.sh
+./10-waiter.sh "pods" "kube-system" "0/1"
+./12-1-bad-gateway-hardening.sh
 ./10-waiter.sh "pods" "kube-system" "0/1"
