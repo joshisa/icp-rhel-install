@@ -44,19 +44,20 @@ tools='\xE2\x9A\x92'
 present='\xF0\x9F\x8E\x81'
 #############
 
-export SSH_KEY=/home/ubuntu/.ssh/boilerup-ssh.pem
+
+export SSH_KEY=/path/to/key
 export SSH_USER=ubuntu
 export ICPUSER=admin
 export ICPPW=admin
 export ICPEMAIL=icp@foo.com
 
 
-export PUBLIC_IP=9.37.239.93
-export MASTER_IP=10.10.25.41
+export PUBLIC_IP=x.x.x.x
+export MASTER_IP=x.x.x.x
 
 # WORKER_IPS[0] should be the same worker at WORKER_HOSTNAMES[0]
-export WORKER_IPS=("10.10.25.42" "10.10.25.43")
-export WORKER_HOSTNAMES=("om-demo-worker-1" "om-demo-worker-2")
+export WORKER_IPS=("x.x.x.x" "x.x.x.x")
+export WORKER_HOSTNAMES=("icp-worker-1" "icp-worker-2")
 
 if [[ "${#WORKER_IPS[@]}" != "${#WORKER_HOSTNAMES[@]}" ]]; then
   echo "ERROR: Ensure that the arrays WORKER_IPS and WORKER_HOSTNAMES are of the same length"
