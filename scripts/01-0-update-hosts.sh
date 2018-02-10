@@ -40,7 +40,9 @@ for ((i=0; i < $NUM_WORKERS; i++)); do
   ssh-keyscan -H ${WORKER_HOSTNAMES[i]} >> ~/.ssh/known_hosts
 
   # Copy over file
-  sudo scp -i ${SSH_KEY} -o HostKeyAlias=${WORKER_HOSTNAMES[i]} ~/worker-hosts ${SSH_USER}@${WORKER_HOSTNAMES[i]}:~/worker-hosts
+  # WARNING:  Be sure that you're comfortable with use of no hostkey checking. MITM can be a concern for some.
+  #           If so, remove the option and manually handle the prompt via verification of the server fingerprint
+  sudo scp -i ${SSH_KEY} -o StrictHostKeyChecking=no ~/worker-hosts ${SSH_USER}@${WORKER_HOSTNAMES[i]}:~/worker-hosts
 
   # Replace worker hosts with file
   ssh -i ${SSH_KEY} ${SSH_USER}@${WORKER_HOSTNAMES[i]} 'sudo cp /etc/hosts /etc/hosts.bak; sudo mv ~/worker-hosts /etc/hosts'
