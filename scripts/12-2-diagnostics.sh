@@ -45,6 +45,11 @@ if [ ${NODEHEALTH} -gt "0" ]; then
   echo ""
 fi
 
+echo ""
+#echo "Running calico SDN diagnostics"
+#sudo apt-get install ipset -y
+#sudo calicoctl node diags
+
 echo "Useful paths and files for inspection ..."
 echo -e "${Cyan}  /etc/cfc/pods${no_color}"
 echo -e "${Cyan}  /etc/cfc/pods/master.json${no_color}"

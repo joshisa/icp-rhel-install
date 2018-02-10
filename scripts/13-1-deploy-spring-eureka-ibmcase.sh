@@ -15,7 +15,7 @@ mkdir -p /tmp/spring
 git clone https://github.com/joshisa/refarch-cloudnative-spring.git /tmp/spring
 
 #AVAILABLE_PV=$(kubectl get pv | grep 20Gi | grep Available | wc -l)
-AVAILABLE_PV=$(kubectl get pv -o wide | grep "20Gi" | grep "Available" | grep "RWO" | grep "default" | wc -l)
+AVAILABLE_PV=$(kubectl get pv -o wide | grep -E "([2-9][0-9])Gi" | grep "Available" | grep "RWO" | grep "default" | wc -l)
 
 if [ "$AVAILABLE_PV" -eq "0" ]; then
    echo "There are no registered persistent volumes of 20Gi RWO that is Available with a storageclass of default within the default namespace"
