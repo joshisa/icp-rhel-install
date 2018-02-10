@@ -32,13 +32,15 @@ for ((i=0; i < $NUM_WORKERS; i++)); do
   # Remove old instance of host
   ssh-keygen -R ${WORKER_IPS[i]}
   ssh-keygen -R ${WORKER_HOSTNAMES[i]}
+  ssh-keygen -R ${WORKER_HOSTNAMES[i]},${WORKER_IPS[i]}
 
   # Do not ask to verify fingerprint of server on ssh
-  ssh-keyscan -H ${WORKER_IPS[i]} >> ~/.ssh/known_hosts
+  ssh-keyscan -H ${WORKER_HOSTNAMES[i]},${WORKER_IPS[i]} >> ~/.ssh/known_hosts
+  ssh-keyscan -H ${WORKER_HOSTNAMES[i]} >> ~/.ssh/known_hosts
   ssh-keyscan -H ${WORKER_HOSTNAMES[i]} >> ~/.ssh/known_hosts
 
   # Copy over file
-  sudo scp -i ${SSH_KEY} ~/worker-hosts  ${SSH_USER}@${WORKER_HOSTNAMES[i]}:~/worker-hosts
+  sudo scp -i ${SSH_KEY} -o HostKeyAlias=${WORKER_HOSTNAMES[i]} ~/worker-hosts ${SSH_USER}@${WORKER_HOSTNAMES[i]}:~/worker-hosts
 
   # Replace worker hosts with file
   ssh -i ${SSH_KEY} ${SSH_USER}@${WORKER_HOSTNAMES[i]} 'sudo cp /etc/hosts /etc/hosts.bak; sudo mv ~/worker-hosts /etc/hosts'
