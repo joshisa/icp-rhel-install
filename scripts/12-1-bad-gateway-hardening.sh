@@ -8,7 +8,8 @@ source 00-variables.sh
 set -e
 
 READINESS_THRESHOLD=20
-READINESS_PERIOD=20
+READINESS_PERIOD_SECONDS=60
+INITIAL_DELAY_SECONDS=180
 
 echo "To help improve the reliability of ICP across system restart, two strategies are employed:"
 echo "     1.  Update the calico default component versions to help improve its instantiation startup time"
@@ -49,12 +50,18 @@ echo "Employing Strategy 2:  Reapplying icp-ds template with updated readiness p
 
 CURRENTFAILURESETTING=$(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}')
 CURRENTPERIODSETTING=$(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.periodSeconds}')
+CURRENTDELAYSETTING=$(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.initialDelaySeconds}')
 echo "Your current ICP-DS readinessProbe failureThreshold is set to "${CURRENTFAILURESETTING}""
 echo "Your current ICP-DS readinessProbe periodSeconds is set to "${CURRENTPERIODSETTING}""
+echo "Your current ICP-DS readinessProbe initialDelaySeconds is set to "${CURRENTDELAYSETTING}""
 
-
-kubectl patch statefulset/icp-ds -n kube-system -p '{"spec":{"template":{"spec":{"containers":[{"name":"icp-ds", "readinessProbe":{"failureThreshold":'"${READINESS_THRESHOLD}"',"periodSeconds":'"${READINESS_PERIOD}"'}}]}}}}'
-./10-waiter.sh "statefulset" "kube-system" "0/1"
+if ([ "${CURRENTFAILURESETTING}" != "${READINESS_THRESHOLD}" ] || [ "${CURRENTPERIODSETTING}" != "${READINESS_PERIOD_SECONDS}" ] || [ "${CURRENTDELAYSETTING}" != "${INITIAL_DELAY_SECONDS}" ]); then
+  kubectl patch statefulset/icp-ds -n kube-system -p '{"spec":{"template":{"spec":{"containers":[{"name":"icp-ds", "readinessProbe":{"failureThreshold":'"${READINESS_THRESHOLD}"',"periodSeconds":'"${READINESS_PERIOD_SECONDS}"',"initialDelaySeconds":'"${INITIAL_DELAY_SECONDS}"'}}]}}}}'
+  ./10-waiter.sh "statefulset" "kube-system" "0/1"
+else
+  echo "Your ICP=DS statefulset has already been patched"
+  exit 0
+fi
 
 echo ""
 echo "Executing kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}'"
