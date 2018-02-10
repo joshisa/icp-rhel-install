@@ -66,9 +66,15 @@ fi
 echo ""
 echo "Executing kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}'"
 echo "Congrats! Your statefulset failureThreshold setting is now updated to $(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.failureThreshold}')"
+
 echo ""
 echo "Executing kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.periodSeconds}'"
 echo "Congrats!  Your statefulset periodSeconds setting is now update to $(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.periodSeconds}')"
+echo ""
+echo "Executing kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.initialDelaySeconds}'"
+echo "Congrats! Your statefulset failureThreshold setting is now updated to $(kubectl get statefulset icp-ds -n kube-system -o jsonpath='{.spec.template.spec.containers[*].readinessProbe.initialDelaySeconds}')"
+echo ""
+
 echo "Sweet! Give your system a few minutes to settle into its new surrounding.  After all pods are running, your cluster should be in a more resilient position for machine restarts"
 echo "PROTIP:  the icp-ds stateful set is a critical component.  The pod that it manages can get stuck in a perpetual terminating state.  To help resolve, execute kubectl delete po/icp-ds-0 --grace-period=0 --force"
 ./10-waiter.sh "pods" "kube-system" "0/1"
