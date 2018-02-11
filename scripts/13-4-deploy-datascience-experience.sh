@@ -22,17 +22,17 @@ if [ "$AVAILABLE_PV" -eq "0" ]; then
    echo "Consider editing or creating a pv with a size of 1G RWX and then try this script again"
    echo ""
    exit 1
+else
+   #DSX-DEV requires that your persistent volume have an assign-to label of user-home
+   #Single line patch to first PV that meets the criteria
+   DSXPV=$(kubectl get pv | grep -E "([1-9]|[1-9][0-9])Gi" | grep "Available" | grep "RWX" | head -1 | awk '{print $1}')
+   kubectl patch pv/${DSXPV} -n default -p '{"metadata":{"labels":{"assign-to":"user-home"},"name":"'${DSXPV}'"}}'
+
+   helm install --namespace default --name dsx-stack ibm-charts/ibm-dsx-dev
+   ./10-waiter.sh "pods" "default" "0/1"
+
+   PORT=$(kubectl get svc dsx-ux -n default -o jsonpath='{.spec.ports[*].nodePort}')
+   echo ""
+   echo "Congrats.  You can now browse to http://${PUBLIC_IP}:$PORT to view your DSX-DEV deployment"
+   echo ""
 fi
-
-#DSX-DEV requires that your persistent volume have an assign-to label of user-home
-#Single line patch to first PV that meets the criteria
-DSXPV=$(kubectl get pv | grep -E "([1-9]|[1-9][0-9])Gi" | grep "Available" | grep "RWX" | head -1 | awk '{print $1}')
-kubectl patch pv/${DSXPV} -n default -p '{"metadata":{"labels":{"assign-to":"user-home"},"name":"'${DSXPV}'"}}'
-
-helm install --namespace default --name dsx-stack ibm-dsx-dev
-./10-waiter.sh "pods" "default" "0/1"
-
-PORT=$(kubectl get svc dsx-ux -n default -o jsonpath='{.spec.ports[*].nodePort}')
-echo ""
-echo "Congrats.  You can now browse to http://${PUBLIC_IP}:$PORT to view your DSX-DEV deployment"
-echo ""
