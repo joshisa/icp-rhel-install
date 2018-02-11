@@ -4,7 +4,7 @@ set -e
 set -u
 
 K8S_POLL_INTERVAL=7 # Number of seconds until script polls cluster again.
-K8S_THRESHOLD=40
+K8S_THRESHOLD=80
 K8S_DEBUG=false; # Detailed debugging
 K8S_RESOURCE_TYPE=$1
 K8S_NAMESPACE=$2
