@@ -63,6 +63,30 @@ echo ""
 #Turn On if we most of the Linux paramters set on the machine
 #sysctl -a
 
+# Source for alot of the below info: https://www.tecmint.com/commands-to-collect-system-and-hardware-information-in-linux/
+echo ""
+echo "Basic System Information"
+sudo dmidecode -t system
+echo ""
+
+#Turn On to view Hardware information
+echo ""
+echo "Hardware Information"
+echo ""
+sudo lshw -short
+#Turn On to view CPU information
+echo ""
+echo -e "CPU Information"
+echo ""
+lscpu
+#Turn On to view Linux Block Device Info
+echo ""
+echo -e "Block Device Information"
+echo ""
+ 
+#Turn on to view PCI Devices Information (usb ports, graphic cards, network adapters)
+lspci -v
+
 for ((i=0; i < $NUM_WORKERS; i++)); do
     echo -e ""
     echo -e "${eyes}   Inspecting ${WORKER_HOSTNAMES[i]} ..."
@@ -75,8 +99,8 @@ for ((i=0; i < $NUM_WORKERS; i++)); do
         #  Good Ref:  http://blog.dustinkirkland.com/2014/02/random-seeds-in-ubuntu-1404-lts-cloud.html
   	echo -e "    ${Cyan}PROTIP:  On systems with limited sources of real randomness we'd like to use some kind of PRNG to gather additional random bits."
   	echo -e "             Why is this important: Applications which need security tend to use /dev/random as their entropy source to gain randomness."
-        echo -e "         If /dev/random runs out of available entropy, it's unable to serve out more randomness and the application waiting for the "
-        echo -e "         randomness ${Yellow}stalls${Cyan} until more random content is available."
+        echo -e "             If /dev/random runs out of available entropy, it's unable to serve out more randomness and the application waiting for the "
+        echo -e "             randomness ${Yellow}stalls${Cyan} until more random content is available."
   	echo -e "             Potential Solution:  Consider HW RNG options.  As a fallback, an easy software RNG solution is HAVEGED"
   	echo -e "             The idea behind HAVENGE is to use the effects of the hidden state associated with modern processor features"
   	echo -e "             such as cache, branch prediction, pipelining, and instruction parallelism in conjunction with the processors"
