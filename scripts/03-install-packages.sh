@@ -19,7 +19,7 @@ else
 fi
 
 if [ "${OS}" == "rhel" ]; then
-  sudo yum install -y yum-utils device-mapper-persistent-data lvm2 parallel haveged rng-tools
+  sudo yum install -y yum-utils device-mapper-persistent-data lvm2 haveged rng-tools
   sudo yum-config-manager -y --add-repo https://download.docker.com/linux/centos/docker-ce.repo
   sudo yum install -y docker-ce
   systemctl enable haveged.service && systemctl start haveged.service
@@ -30,7 +30,7 @@ else # ubuntu
   # https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-docker-ce
   # sudo apt-get install -y linux-image-extra-$(uname -r) linux-image-extra-virtual
   sudo apt-get update
-  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common ntpdate parallel haveged rng-tools
+  sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common ntpdate haveged rng-tools
   curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
   sudo apt-key fingerprint 0EBFCD88
   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
