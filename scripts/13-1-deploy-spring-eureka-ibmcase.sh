@@ -14,29 +14,15 @@ mkdir -p /tmp/spring
 # Temporarily using patched fork for rabbitmq erlang issue until PR accepted
 git clone https://github.com/joshisa/refarch-cloudnative-spring.git /tmp/spring
 
-#AVAILABLE_PV=$(kubectl get pv | grep 20Gi | grep Available | wc -l)
-AVAILABLE_PV=$(kubectl get pv -o wide | grep -E "([2-9][0-9])Gi" | grep "Available" | grep "RWO" | grep "default" | wc -l)
-
-if [ "$AVAILABLE_PV" -eq "0" ]; then
-   echo "There are no registered persistent volumes of 20Gi RWO that is Available with a storageclass of default within the default namespace"
-   echo "A PV of 20Gi or larger is required for the rabbitmq claim and successful deployment of this refarch"
-   echo "Executing kubectl get pv -o wide ..."
-   echo ""
-   kubectl get pv -o wide
-   echo ""
-   echo "Consider editing or creating a pv and add a SPEC attribute of \"storageClassName: default\" and then try this script again"
-   echo "    example:  kubectl edit pv <name of pv>"
-   echo "Should look similar to this:"
-   echo ""
-   echo "[....]"
-   echo "spec:"
-   echo "  storageClassName: default"
-   echo "  accessModes:"
-   echo "  - ReadWriteOnce"
-   echo "  [....]"
-   echo ""
+# Initiating attempt to patch first valid pv
+AVAILABLE_PV=$(kubectl get pv -o wide | grep -E "([2-9][0-9])Gi" | grep "Available" | grep "RWO" | wc -l)
+if [ "${AVAILABLE_PV}" -eq "0" ]; then
+   echo "There are no registered persistent volumes of 20Gi RWO that are Available"
+   echo "Please consider creating a PV with RWO of 20Gi or larger to satisfy the rabbit MQ requirement"
    exit 1
 else
+   FIRST_ELIGIBLE=$(kubectl get pv -o wide | grep -E "([2-9][0-9])Gi" | grep "Available" | grep "RWO" | head -1 | awk '{print $1}')
+   kubectl patch pv/${FIRST_ELIGIBLE} -n default -p '{"spec":{"storageClassName":"default"}}'
    kubectl create -f /tmp/spring/rabbitmq/rabbitmq-pvc.yaml
    ./10-waiter.sh "pvc" "default" "Pending"
 fi
@@ -58,7 +44,7 @@ helm install --name spring-stack ibmcase-spring/spring-stack \
 --set global.rabbitmq.password=guest \
 --set spring-config-server.spring.cloud.config.server.git.uri=https://github.com/ibm-cloud-architecture/fortune-teller \
 --set spring-config-server.spring.cloud.config.server.git.searchPaths=configuration \
---set spring-eureka-server.service.type=NodePort 
+--set spring-eureka-server.service.type=NodePort
 
 ./10-waiter.sh "pods" "default" "0/1"
 
