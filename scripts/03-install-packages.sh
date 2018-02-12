@@ -39,7 +39,7 @@ else # ubuntu
   sudo apt-get install -y docker-ce
   # Let's setup so that we can use docker without sudo
   echo "Setting up docker ..."
-  sudo gpasswd -a ubuntu docker
+  sudo gpasswd -a ${SSH_USER} docker
   /usr/bin/newgrp docker <<EONG
 EONG
   echo "Restarting docker ..."
@@ -81,7 +81,7 @@ for ((i=0; i < $NUM_WORKERS; i++)); do
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-get update
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} apt-cache madison docker-ce
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo apt-get install -y docker-ce
-    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo gpasswd -a ubuntu docker
+    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo gpasswd -a ${SSH_USER} docker
     ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} /usr/bin/newgrp docker <<EONG
 EONG
     # Really important to have high amount of entropy available.  
