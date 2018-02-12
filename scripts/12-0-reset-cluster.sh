@@ -6,9 +6,9 @@
 # Get the variables
 source 00-variables.sh
 
-sudo systemctl restart docker
+sudo systemctl restart kubelet docker
 echo "Looping through workers ..."
 for ((i=0; i < $NUM_WORKERS; i++)); do
-    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo systemctl restart docker
+    ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo systemctl restart kubelet docker
 done
 

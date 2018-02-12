@@ -45,6 +45,10 @@ if [ ${NODEHEALTH} -gt "0" ]; then
   echo ""
 fi
 
+echo -e "${eyes}   Enumerating local helm chart urls of entitled content"
+curl -k -s https://mycluster.icp:8443/helm-repo/charts/index.yaml | grep -Eo '(http|https)://[^/"]+.*?tgz'
+echo ""
+
 echo ""
 #echo "Running calico SDN diagnostics"
 #sudo apt-get install ipset -y
