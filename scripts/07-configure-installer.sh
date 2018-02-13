@@ -17,8 +17,19 @@ for ((i=0; i < $NUM_WORKERS; i++)); do
 done
 echo "" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
 
-echo "[proxy]" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
-echo "${MASTER_IP}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
+if [ ${NUM_PROXIES} -gt "0" ]; then
+  echo "[proxy]" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
+  for ((i=0; i < $NUM_PROXIES; i++)); do
+    echo "${PROXY_IPS[i]}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
+  done
+fi
+
+if [ ${NUM_MANAGERS} -gt "0" ]; then
+  echo "[management]" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
+  for ((i=0; i < $NUM_MANAGERS; i++)); do
+    echo "${MANAGEMENT_IPS[i]}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
+  done
+fi
 
 # Add line for external IP in config
 echo "cluster_access_ip: ${PUBLIC_IP}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml

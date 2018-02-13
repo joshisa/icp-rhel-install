@@ -66,6 +66,29 @@ fi
 
 export NUM_WORKERS=${#WORKER_IPS[@]}
 
+# WORKER_IPS[0] should be the same worker at WORKER_HOSTNAMES[0]
+export PROXY_IPS=("x.x.x.x" "x.x.x.x")
+export PROXY_HOSTNAMES=("icp-proxy-1" "icp-proxy-2")
+
+if [[ "${#PROXY_IPS[@]}" != "${#PROXY_HOSTNAMES[@]}" ]]; then
+  echo "ERROR: Ensure that the arrays PROXY_IPS and PROXY_HOSTNAMES are of the same length"
+  return 1
+fi
+
+export NUM_PROXIES=${#PROXY_IPS[@]}
+
+# WORKER_IPS[0] should be the same worker at WORKER_HOSTNAMES[0]
+export MANAGEMENT_IPS=("x.x.x.x" "x.x.x.x")
+export MANAGEMENT_HOSTNAMES=("icp-management-1" "icp-management-2")
+
+if [[ "${#MANAGEMENT_IPS[@]}" != "${#MANAGEMENT_HOSTNAMES[@]}" ]]; then
+  echo "ERROR: Ensure that the arrays MANAGEMENT_IPS and MANAGEMENT_HOSTNAMES are of the same length"
+  return 1
+fi
+
+export NUM_MANAGERS=${#MANAGEMENT_IPS[@]}
+
+
 export ARCH="$(uname -m)"
 if [ "${ARCH}" != "x86_64" ]; then
   export INCEPTION_TAG="-${ARCH}"
