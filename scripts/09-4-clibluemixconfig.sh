@@ -16,6 +16,7 @@ sudo /tmp/Bluemix_CLI/install_bluemix_cli
 
 curl --insecure -Lo /tmp/icpcli https://${PUBLIC_IP}:8443/api/cli/icp-linux-amd64
 bx plugin install /tmp/icpcli
+bx plugin install dev -r Bluemix
 
 # Cleanup
 sudo rm /tmp/clibluemix.tar.gz
