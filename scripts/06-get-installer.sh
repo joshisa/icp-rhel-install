@@ -13,8 +13,17 @@ else
   tar -xf "${INCEPTION_TAR_FILEPATH}" -O | docker load
 fi
 
-  sudo mkdir /opt/ibm-cloud-private-${INCEPTION_VERSION}
+  # Let's make sure no legacy stuff is left behind from prior installs
+  sudo rm -rf /opt/ibm-cloud-private-${INCEPTION_VERSION}-old
+  sudo mv /opt/ibm-cloud-private-${INCEPTION_VERSION} /opt/ibm-cloud-private-${INCEPTION_VERSION}-old 2>/dev/null; true
+  sudo mkdir -p /opt/ibm-cloud-private-${INCEPTION_VERSION} 2>/dev/null; true
   sudo chown $USER /opt/ibm-cloud-private-${INCEPTION_VERSION}
   cd /opt/ibm-cloud-private-${INCEPTION_VERSION}
 
   sudo docker run -v $(pwd):/data -e LICENSE=accept ibmcom/icp-inception${INCEPTION_TAG}:${INCEPTION_VERSION} cp -r cluster /data
+
+if [[ -n "${INCEPTION_TAR_FILEPATH}" ]]; then
+  echo "Copying ICP Tar File into cluster/images directory"
+  sudo mkdir -p /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/images
+  sudo cp "${INCEPTION_TAR_FILEPATH}" /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/images
+fi

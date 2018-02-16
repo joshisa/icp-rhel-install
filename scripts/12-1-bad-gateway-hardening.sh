@@ -42,7 +42,7 @@ else
 fi
 
 echo "Restarting cluster ..."
-./12-0-reset-cluster.sh
+#./12-0-reset-cluster.sh
 ./10-waiter.sh "pods" "kube-system" "0/1"
 
 echo ""
