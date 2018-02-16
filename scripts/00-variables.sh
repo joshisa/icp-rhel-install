@@ -94,6 +94,7 @@ if [ "${ARCH}" != "x86_64" ]; then
   export INCEPTION_TAG="-${ARCH}"
 fi
 
+export INCEPTION_TAR_FILEPATH=
 export INCEPTION_VERSION="2.1.0.1"
 
 # Get OS ID
