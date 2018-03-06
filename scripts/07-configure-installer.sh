@@ -28,8 +28,8 @@ else
 fi
 echo "" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
 
-echo "[management]" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
 if [ ${NUM_MANAGERS} -gt "0" ]; then
+  echo "[management]" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
   for ((i=0; i < $NUM_MANAGERS; i++)); do
     echo "${MANAGEMENT_IPS[i]}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
   done
