@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -e
 # Get the variables
 source 00-variables.sh
 
@@ -10,7 +10,7 @@ else
   echo "A local ICP Tar File has been provided.  We will load the installation from ${INCEPTION_TAR_FILEPATH}"
   echo "Patience will be required ... the loading of the tar file can take while.  Go grab a cup of coffee or a beer!"
   sudo service docker start
-  tar -xf "${INCEPTION_TAR_FILEPATH}" -O | docker load
+  tar -xf "${INCEPTION_TAR_FILEPATH}" -O | sudo docker load
 fi
 
   # Let's make sure no legacy stuff is left behind from prior installs
