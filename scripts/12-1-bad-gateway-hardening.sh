@@ -28,7 +28,9 @@ if [ "$STRATEGY" = "RollingUpdate" ]; then
   echo "    Updating calico-node-amd64 daemonset image versions ..."
   kubectl set image ds/calico-node-amd64 -n kube-system calico-node-amd64=calico/node:v2.6.7 install-cni=calico/cni:v1.11.2
   echo "    Updating calico-policy-controller deployment image version ..."
-  kubectl set image deploy/calico-policy-controller -n kube-system calico-policy-controller=calico/kube-controllers:v1.0.3
+  # < 2.1.0.1
+  # kubectl set image deploy/calico-policy-controller -n kube-system calico-policy-controller=calico/kube-controllers:v1.0.3
+  kubectl set image deploy/calico-kube-controllers -n kube-system calico-kube-controllers=calico/kube-controllers:v1.0.3
   echo "Sweet! Your calico components have been upgraded"
 else
   # Err out and state that the deploy appears to be older than 1.6 and cannot be ICP
