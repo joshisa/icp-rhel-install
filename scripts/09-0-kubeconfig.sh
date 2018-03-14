@@ -7,7 +7,8 @@ set -e
 cd /opt/ibm-cloud-private-${INCEPTION_VERSION}
 
 # Get kubectl
-sudo docker run -e LICENSE=accept --net=host -v /usr/local/bin:/data ibmcom/kubernetes${INCEPTION_TAG}:v1.9.1-ee cp /kubectl /data
+# Append a -ee on the version number for Cloud Native Installs (e.g. v1.9.1-ee)
+sudo docker run -e LICENSE=accept --net=host -v /usr/local/bin:/data ibmcom/kubernetes${INCEPTION_TAG}:v1.9.1 cp /kubectl /data
 
 # Make config directory
 mkdir -p ~/.kube
