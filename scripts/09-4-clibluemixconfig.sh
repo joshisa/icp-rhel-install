@@ -25,6 +25,6 @@ sudo rm /tmp/icpcli
 
 bx plugin show icp
 echo ""
-bx pr login -a https://${PUBLIC_IP}:8443 --skip-ssl-validation -u admin -p admin -c id-icp-account
+bx pr login -a https://${PUBLIC_IP}:8443 --skip-ssl-validation -u admin -p admin -c id-mycluster-account
 echo ""
 bx pr
