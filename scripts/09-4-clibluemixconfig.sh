@@ -9,7 +9,7 @@ set -u
 shopt -s expand_aliases
 
 source 00-variables.sh
-BLUEMIXCLIVERSION=0.6.6
+BLUEMIXCLIVERSION=$(curl -s https://github.com/IBM-Cloud/ibm-cloud-cli-release/releases/latest | grep -o '[0-9]\.[0-9]\.[0-9]')
 curl -Lo /tmp/clibluemix.tar.gz https://clis.ng.bluemix.net/download/bluemix-cli/${BLUEMIXCLIVERSION}/linux64
 tar -zxf /tmp/clibluemix.tar.gz -C /tmp
 sudo /tmp/Bluemix_CLI/install_bluemix_cli
