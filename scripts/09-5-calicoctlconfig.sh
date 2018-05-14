@@ -10,7 +10,7 @@ shopt -s expand_aliases
 
 source 00-variables.sh
 
-CALICOCTLVERSION=1.4.0
+CALICOCTLVERSION=3.1.1
 CALICOCTL_CFG_PATH=/etc/calico/calicoctl.cfg
 sudo rm -rf /etc/calico
 sudo mkdir -p /etc/calico
@@ -25,8 +25,8 @@ ip=$(ps -ef | grep -Po "(?<=advertise-client-urls\=)https:\/\/[0-9]{1,3}\.[0-9]{
 
 # Build config file for calicoctl
 touch calicoctl.cfg
-echo "apiVersion: v1" >> calicoctl.cfg
-echo "kind: calicoApiConfig" >> calicoctl.cfg
+echo "apiVersion: projectcalico.org/v3" >> calicoctl.cfg
+echo "kind: CalicoAPIConfig" >> calicoctl.cfg
 echo "metadata:" >> calicoctl.cfg
 echo "spec:" >> calicoctl.cfg
 #echo "  etcdEndpoints: ${ip}" >> calicoctl.cfg
