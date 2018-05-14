@@ -7,10 +7,9 @@ set -e
 set -u
 
 HELMVERSION=2.7.2
-curl -Lo /tmp/helm.tar.gz https://storage.googleapis.com/kubernetes-helm/helm-v${HELMVERSION}-linux-amd64.tar.gz
-tar -zxvf /tmp/helm.tar.gz -C /tmp
-sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
-chmod +x /usr/local/bin/helm
+curl -k -Lo /tmp/helm https://mycluster.icp:8443/helm-api/cli/linux-amd64/helm --header "Authorization: $(bx pr tokens | grep "Access token:" | cut -d' ' -f3- | sed -e 's/^[[:space:]]*//')"
+chmod +x /tmp/helm
+sudo mv /tmp/helm /usr/local/bin/helm
 
 helm init --upgrade
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
