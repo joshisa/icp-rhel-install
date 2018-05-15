@@ -37,8 +37,9 @@ kubectl create -f /tmp/spring/rabbitmq/rabbitmq-deployment.yaml
 
 kubectl create -f /tmp/spring/rabbitmq/rabbitmq-service.yaml
 
+helm repo add ibmcase-spring https://raw.githubusercontent.com/ibm-cloud-architecture/refarch-cloudnative-spring/master/docs/charts/
 
-helm install --name spring-stack ibmcase-spring/spring-stack \
+helm install --tls --name spring-stack ibmcase-spring/spring-stack \
 --set global.rabbitmq.host=rabbitmq \
 --set global.rabbitmq.username=guest \
 --set global.rabbitmq.password=guest \
