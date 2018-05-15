@@ -10,13 +10,13 @@ source 00-variables.sh
 rm -rf /tmp/microclimate
 mkdir -p /tmp/microclimate
 
-AVAILABLE_PV=$(kubectl get pv -o wide | grep "8Gi" | grep "Available" | grep "RWX" | wc -l)
-curl -Lo /tmp/microclimate.zip https://microclimate-dev2ops.github.io/download/microclimate-18.03.zip
+AVAILABLE_PV=$(kubectl get pv -o wide | grep "8Gi" | grep "Available" | grep "RWO" | wc -l)
+curl -Lo /tmp/microclimate.zip https://microclimate-dev2ops.github.io/download/microclimate-18.04.zip
 sudo apt-get install -y unzip
 unzip -o -d /tmp /tmp/microclimate.zip
 
-kubectl create secret docker-registry microclimate-icp-secret --docker-server=mycluster.icp:8500 --docker-username="${ICPUSER}" --docker-password="${ICPPW}" --docker-email="${ICPEMAIL}" -n default
-kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "microclimate-icp-secret"}]}' -n default
+kubectl create secret docker-registry microclimate-registry-secret --docker-server=mycluster.icp:8500 --docker-username="${ICPUSER}" --docker-password="${ICPPW}" --docker-email="${ICPEMAIL}" -n default
+kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "microclimate-registry-secret"}]}' -n default
 
 if [ "$AVAILABLE_PV" -eq "0" ]; then
    echo "There are no registered persistent volumes of 8Gi RWX that is Available within the default namespace"
@@ -27,7 +27,7 @@ if [ "$AVAILABLE_PV" -eq "0" ]; then
    echo ""
    exit 1
 else
-   helm install --tls --name microclimate --namespace default --set persistence.enabled=true /tmp/microclimate-18.03/stable/ibm-microclimate
+   helm install --tls --name microclimate --namespace default --set persistence.enabled=true /tmp/microclimate-18.04/stable/ibm-microclimate
 fi
 
 ./10-waiter.sh "pods" "default" "0/1"
