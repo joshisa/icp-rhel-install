@@ -27,7 +27,7 @@ if [ "$AVAILABLE_PV" -eq "0" ]; then
    echo ""
    exit 1
 else
-   helm install --tls --name microclimate --namespace default --set persistence.enabled=true /tmp/microclimate-18.04/stable/ibm-microclimate
+   helm install --tls --name microclimate --namespace default --set jenkins.Master.HostName=jenkins.${PUBLIC_IP}.nip.io --set persistence.enabled=true /tmp/microclimate-18.04/stable/ibm-microclimate
 fi
 
 ./10-waiter.sh "pods" "default" "0/1"
