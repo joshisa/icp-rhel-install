@@ -37,5 +37,5 @@ fi
 rm /tmp/microclimate.zip
 rm -rf /tmp/microclimate
 
-PORT=$(kubectl get svc microclimate -n default -o jsonpath='{.spec.ports[*].nodePort}')
+PORT=$(kubectl get svc microclimate-ibm-microclimate -n default -o jsonpath='{.spec.ports[*].nodePort}')
 echo "When the pods are deployed, you may browse to http://${PUBLIC_IP}:${PORT} to access your microclimate instance"
