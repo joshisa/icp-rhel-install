@@ -15,6 +15,7 @@ curl -Lo /tmp/microclimate.zip https://microclimate-dev2ops.github.io/download/m
 sudo apt-get install -y unzip
 unzip -o -d /tmp /tmp/microclimate.zip
 
+kubectl delete secret microclimate-registry-secret --ignore-not-found=true
 kubectl create secret docker-registry microclimate-registry-secret --docker-server=mycluster.icp:8500 --docker-username="${ICPUSER}" --docker-password="${ICPPW}" --docker-email="${ICPEMAIL}" -n default
 kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "microclimate-registry-secret"}]}' -n default
 
