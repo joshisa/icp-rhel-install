@@ -11,7 +11,17 @@ curl -k -Lo /tmp/helm https://mycluster.icp:8443/helm-api/cli/linux-amd64/helm -
 chmod +x /tmp/helm
 sudo mv /tmp/helm /usr/local/bin/helm
 
-helm init --upgrade
+helm init --client-only
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
 helm repo add ibmcase https://raw.githubusercontent.com/ibm-cloud-architecture/refarch-cloudnative-kubernetes/master/docs/charts/bluecompute-ce
 helm repo add ibmcase-spring https://raw.githubusercontent.com/ibm-cloud-architecture/refarch-cloudnative-spring/master/docs/charts/
+
+bx pr cluster-config $(bx pr clusters | awk 'FNR == 3 {print $1}') 
+
+helm version --tls
+
+# Hint ... if you cannot connect to tiller
+# Reset your ICP tiller deploy ... by doing these two steps on your boot/master node
+#
+# kubectl delete deploy tiller-deploy -n kube-system
+# kubectl apply --force --overwrite=true -f $(find /opt -name tiller.yaml)
