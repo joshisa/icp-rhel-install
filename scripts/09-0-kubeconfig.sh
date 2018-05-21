@@ -12,7 +12,7 @@ sudo docker run -e LICENSE=accept --net=host -v /usr/local/bin:/data ibmcom/kube
 
 # Make config directory
 mkdir -p ~/.kube
-sudo cp cluster/cfc-certs/kubecfg.* ~/.kube/
+sudo cp /var/lib/kubelet/kubectl-config ~/.kube/config
 sudo chown -R $USER  ~/.kube/
 
 #Set kube config
