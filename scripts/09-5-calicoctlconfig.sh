@@ -10,7 +10,7 @@ shopt -s expand_aliases
 
 source 00-variables.sh
 
-CALICOCTLVERSION=3.1.1
+CALICOCTLVERSION=3.1.3
 CALICOCTL_CFG_PATH=/etc/calico/calicoctl.cfg
 sudo rm -rf /etc/calico
 sudo mkdir -p /etc/calico
