@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 # Get the variables
 source 00-variables.sh
 

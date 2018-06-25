@@ -72,3 +72,21 @@ for ((i=0; i < $NUM_MANAGERS; i++)); do
   ssh ${SSH_USER}@${MANAGEMENT_HOSTNAMES[i]} sudo service docker start
 
 done
+
+for ((i=0; i < $NUM_VA; i++)); do
+  # Disable SELinux
+  if [ "${OS}" == "rhel" ]; then
+    ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo setenforce 0
+  fi
+
+  # Set VM max map count
+  ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo sysctl -w vm.max_map_count=262144
+  ssh ${SSH_USER}@${VA_HOSTNAMES[i]} "echo vm.max_map_count=262144 | sudo tee -a /etc/sysctl.conf"
+
+  # Sync time
+  ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo ntpdate -s time.nist.gov
+
+  # Start docker
+  ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo service docker start
+
+done

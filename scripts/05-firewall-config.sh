@@ -9,6 +9,7 @@ MASTER_PORTS=("8101" "179" "9099" "8500" "8743" "5044" "5046" "9100" "9200" "930
 WORKER_PORTS=("179" "9099" "4300" "4194" "10248:10252" "30000:32767" "8001" "8888" "24007" "24008" "2222" "49152:49251" "9100" "4500")
 PROXY_PORTS=("179" "9099" "80" "443" "8181" "18080" "4194" "10248:10252" "30000:32767" "9100" "4500")
 MANAGEMENT_PORTS=("179" "9099" "8743" "5044" "5046" "9200" "9300" "3130" "9100")
+VA_PORTS=("30610")
 
 # Stop firewall
 if [ "${OS}" == "rhel" ]; then
@@ -108,5 +109,30 @@ for ((i=0; i < $NUM_MANAGERS; i++)); do
     ssh ${SSH_USER}@${MANAGEMENT_HOSTNAMES[i]} sudo ufw allow ssh
     #ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo ufw --force enable
     #ssh ${SSH_USER}@${WORKER_HOSTNAMES[i]} sudo ufw status
+  fi
+done
+
+echo "Setting up port access via iptables on vulnerability advisor node(s) ..."
+for ((i=0; i < $NUM_VA; i++)); do
+  # Disable SELinux
+  if [ "${OS}" == "rhel" ]; then
+    ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo systemctl stop firewalld.service
+  else
+    ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo ufw disable
+    ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo ufw allow ssh
+  fi
+
+  for port in "${VA_PORTS[@]}"; do
+    ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo iptables -A INPUT -p tcp -m tcp --sport $port -j ACCEPT
+    ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo iptables -A OUTPUT -p tcp -m tcp --dport $port -j ACCEPT
+  done
+
+  # Do we need this?
+  if [ "${OS}" == "rhel" ]; then
+    ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo service iptables restart
+  else
+    ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo ufw allow ssh
+    #ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo ufw --force enable
+    #ssh ${SSH_USER}@${VA_HOSTNAMES[i]} sudo ufw status
   fi
 done

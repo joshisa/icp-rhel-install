@@ -38,11 +38,20 @@ else
   echo "No Management Node IPs provided."
 fi
 
+if [ ${NUM_VA} -gt "0" ]; then
+  echo "[va]" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
+  for ((i=0; i < $NUM_VA; i++)); do
+    echo "${VA_IPS[i]}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
+  done
+  echo "" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/hosts
+else
+  echo "No Vulnerability Advisor Node IPs provided."
+fi
+
 # Add line for external IP in config
 echo "cluster_access_ip: ${PUBLIC_IP}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml
 echo "proxy_access_ip: ${PUBLIC_IP}" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml
 echo "kibana_install: true" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml
-echo "ingress_enabled: true" | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml
 
 # Enabling Vulnerability Advisor
 echo 'disabled_management_services: [""]' | sudo tee -a /opt/ibm-cloud-private-${INCEPTION_VERSION}/cluster/config.yaml

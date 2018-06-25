@@ -45,8 +45,8 @@ present='\xF0\x9F\x8E\x81'
 #############
 
 
-export SSH_KEY=/path/to/key
-export SSH_USER=ubuntu
+export SSH_KEY=/path/to/priv/key
+export SSH_USER=root
 export ICPUSER=admin
 export ICPPW=admin
 export ICPEMAIL=icp@foo.com
@@ -56,8 +56,8 @@ export PUBLIC_IP=x.x.x.x
 export MASTER_IP=x.x.x.x
 
 # WORKER_IPS[0] should be the same worker at WORKER_HOSTNAMES[0]
-export WORKER_IPS=("x.x.x.x" "x.x.x.x")
-export WORKER_HOSTNAMES=("icp-worker-1" "icp-worker-2")
+export WORKER_IPS=("x.x.x.x" "x.x.x.x" "x.x.x.x")
+export WORKER_HOSTNAMES=("om-demo-worker-1" "om-demo-worker-2" "om-demo-worker-3")
 
 if [[ "${#WORKER_IPS[@]}" != "${#WORKER_HOSTNAMES[@]}" ]]; then
   echo "ERROR: Ensure that the arrays WORKER_IPS and WORKER_HOSTNAMES are of the same length"
@@ -66,9 +66,9 @@ fi
 
 export NUM_WORKERS=${#WORKER_IPS[@]}
 
-# WORKER_IPS[0] should be the same worker at WORKER_HOSTNAMES[0]
-export PROXY_IPS=("x.x.x.x" "x.x.x.x")
-export PROXY_HOSTNAMES=("icp-proxy-1" "icp-proxy-2")
+# PROXY_IPS[0] should be the same worker at PROXY_HOSTNAMES[0]
+export PROXY_IPS=("x.x.x.x")
+export PROXY_HOSTNAMES=("om-demo-master")
 
 if [[ "${#PROXY_IPS[@]}" != "${#PROXY_HOSTNAMES[@]}" ]]; then
   echo "ERROR: Ensure that the arrays PROXY_IPS and PROXY_HOSTNAMES are of the same length"
@@ -77,9 +77,9 @@ fi
 
 export NUM_PROXIES=${#PROXY_IPS[@]}
 
-# WORKER_IPS[0] should be the same worker at WORKER_HOSTNAMES[0]
-export MANAGEMENT_IPS=("x.x.x.x" "x.x.x.x")
-export MANAGEMENT_HOSTNAMES=("icp-management-1" "icp-management-2")
+# MANAGEMENT_IPS[0] should be the same worker at MANAGEMENT_HOSTNAMES[0]
+export MANAGEMENT_IPS=("x.x.x.x")
+export MANAGEMENT_HOSTNAMES=("om-management")
 
 if [[ "${#MANAGEMENT_IPS[@]}" != "${#MANAGEMENT_HOSTNAMES[@]}" ]]; then
   echo "ERROR: Ensure that the arrays MANAGEMENT_IPS and MANAGEMENT_HOSTNAMES are of the same length"
@@ -88,14 +88,25 @@ fi
 
 export NUM_MANAGERS=${#MANAGEMENT_IPS[@]}
 
+# VA_IPS[0] should be the same worker at VA_HOSTNAMES[0]
+export VA_IPS=("x.x.x.x")
+export VA_HOSTNAMES=("om-vulnerability")
+
+if [[ "${#VA_IPS[@]}" != "${#VA_HOSTNAMES[@]}" ]]; then
+  echo "ERROR: Ensure that the arrays MANAGEMENT_IPS and MANAGEMENT_HOSTNAMES are of the same length"
+  return 1
+fi
+
+export NUM_VA=${#VA_IPS[@]}
+
 
 export ARCH="$(uname -m)"
 if [ "${ARCH}" != "x86_64" ]; then
   export INCEPTION_TAG="-${ARCH}"
 fi
 
-export INCEPTION_TAR_FILEPATH=
-export INCEPTION_VERSION="2.1.0.1"
+export INCEPTION_TAR_FILEPATH="/home/user/some.tar.gz"
+export INCEPTION_VERSION="2.1.0.3-ee"
 
 # Get OS ID
 if [ -f /etc/os-release ]; then

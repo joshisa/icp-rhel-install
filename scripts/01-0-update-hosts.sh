@@ -33,6 +33,11 @@ for ((i=0; i < $NUM_MANAGERS; i++)); do
 done
 echo "" | sudo tee -a /etc/hosts
 
+for ((i=0; i < $NUM_VA; i++)); do
+  echo "${VA_IPS[i]} ${VA_HOSTNAMES[i]}" | sudo tee -a /etc/hosts
+done
+echo "" | sudo tee -a /etc/hosts
+
 sudo cp /etc/hosts ~/worker-hosts
 sudo chown $USER ~/worker-hosts
 
@@ -96,4 +101,24 @@ for ((i=0; i < $NUM_MANAGERS; i++)); do
 
   # Replace worker hosts with file
   ssh -i ${SSH_KEY} ${SSH_USER}@${MANAGEMENT_HOSTNAMES[i]} 'sudo cp /etc/hosts /etc/hosts.bak; sudo mv ~/worker-hosts /etc/hosts'
+done
+
+for ((i=0; i < $NUM_VA; i++)); do
+  # Remove old instance of host
+  ssh-keygen -R ${VA_IPS[i]}
+  ssh-keygen -R ${VA_HOSTNAMES[i]}
+  ssh-keygen -R ${VA_HOSTNAMES[i]},${VA_IPS[i]}
+
+  # Do not ask to verify fingerprint of server on ssh
+  ssh-keyscan -H ${VA_HOSTNAMES[i]},${VA_IPS[i]} >> ~/.ssh/known_hosts
+  ssh-keyscan -H ${VA_HOSTNAMES[i]} >> ~/.ssh/known_hosts
+  ssh-keyscan -H ${VA_HOSTNAMES[i]} >> ~/.ssh/known_hosts
+
+  # Copy over file
+  # WARNING:  Be sure that you're comfortable with use of no hostkey checking. MITM can be a concern for some.
+  #           If so, remove the option and manually handle the prompt via verification of the server fingerprint
+  sudo scp -i ${SSH_KEY} -o StrictHostKeyChecking=no ~/worker-hosts ${SSH_USER}@${VA_HOSTNAMES[i]}:~/worker-hosts
+
+  # Replace worker hosts with file
+  ssh -i ${SSH_KEY} ${SSH_USER}@${VA_HOSTNAMES[i]} 'sudo cp /etc/hosts /etc/hosts.bak; sudo mv ~/worker-hosts /etc/hosts'
 done

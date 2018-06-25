@@ -60,3 +60,19 @@ for ((i=0; i < $NUM_MANAGERS; i++)); do
   ssh -i ${SSH_KEY} ${SSH_USER}@${MANAGEMENT_HOSTNAMES[i]} 'cat ~/.ssh/master.id_rsa.pub | sudo tee /root/.ssh/authorized_keys | tee -a ~/.ssh/authorized_keys; echo "PermitRootLogin yes" | sudo tee -a /etc/ssh/sshd_config'
   ssh -i ${SSH_KEY} ${SSH_USER}@${MANAGEMENT_HOSTNAMES[i]} sudo service sshd restart
 done
+
+# Loop through the array
+for ((i=0; i < $NUM_VA; i++)); do
+  # Prevent SSH identity prompts
+  # If hostname exists in known hosts remove it
+  ssh-keygen -R ${VA_HOSTNAMES[i]}
+  # Add hostname to known hosts
+  ssh-keyscan -H ${VA_HOSTNAMES[i]} | tee -a ~/.ssh/known_hosts
+
+  # Allow root and user login
+  ssh -i ${SSH_KEY} ${SSH_USER}@${VA_HOSTNAMES[i]} sudo mkdir -p /root/.ssh
+  scp -i ${SSH_KEY} ~/.ssh/master.id_rsa.pub ${SSH_USER}@${VA_HOSTNAMES[i]}:~/.ssh/master.id_rsa.pub
+
+  ssh -i ${SSH_KEY} ${SSH_USER}@${VA_HOSTNAMES[i]} 'cat ~/.ssh/master.id_rsa.pub | sudo tee /root/.ssh/authorized_keys | tee -a ~/.ssh/authorized_keys; echo "PermitRootLogin yes" | sudo tee -a /etc/ssh/sshd_config'
+  ssh -i ${SSH_KEY} ${SSH_USER}@${VA_HOSTNAMES[i]} sudo service sshd restart
+done
