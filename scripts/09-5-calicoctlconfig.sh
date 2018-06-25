@@ -34,7 +34,7 @@ echo "  etcdKeyFile: /etc/cfc/conf/etcd/client-key.pem" >> calicoctl.cfg
 echo "  etcdCertFile: /etc/cfc/conf/etcd/client.pem" >> calicoctl.cfg
 echo "  etcdCACertFile: /etc/cfc/conf/etcd/ca.pem" >> calicoctl.cfg
 echo "  datastoreType: \"kubernetes\"" >> calicoctl.cfg
-echo "  kubeconfig: \"/home/${SSH_USER}/.kube/config\"" >> calicoctl.cfg
+echo "  kubeconfig: \"${HOME}/.kube/config\"" >> calicoctl.cfg
 
 sudo mv calicoctl.cfg /etc/calico
 
