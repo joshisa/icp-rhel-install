@@ -11,7 +11,7 @@ rm -rf /tmp/microclimate
 mkdir -p /tmp/microclimate
 
 AVAILABLE_PV=$(kubectl get pv -o wide | grep "8Gi" | grep "Available" | grep "RWO" | wc -l)
-curl -Lo /tmp/microclimate.zip https://microclimate-dev2ops.github.io/download/microclimate-18.04.zip
+curl -Lo /tmp/microclimate.zip https://microclimate-dev2ops.github.io/$(curl -s https://microclimate-dev2ops.github.io/gettingstarted | grep -Po 'download/[^"]+')
 sudo apt-get install -y unzip
 unzip -o -d /tmp /tmp/microclimate.zip
 
