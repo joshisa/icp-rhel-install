@@ -13,6 +13,8 @@ sudo docker run -e LICENSE=accept --net=host -v /usr/local/bin:/data ibmcom/hype
 # Make config directory
 mkdir -p ~/.kube
 sudo cp /var/lib/kubelet/kubectl-config ~/.kube/config
+sudo cp /var/lib/kubelet/kubecfg.crt ~/.kube/kubecfg.crt
+sudo cp /var/lib/kubelet/kubecfg.key ~/.kube/kubecfg.key
 sudo chown -R $USER  ~/.kube/
 
 #Set kube config
