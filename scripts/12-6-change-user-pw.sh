@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Reference: https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0.3/user_management/change_admin_passwd.html
 
 USAGE="Usage: ./12-6-change-user-pw.sh newusername newpw\n
 \tnewusername:\tAssignment or reuse of username  \n
