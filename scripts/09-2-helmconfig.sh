@@ -20,12 +20,12 @@ ibmcloud pr cluster-config $(bx pr clusters | awk 'FNR == 3 {print $1}')
 CERTCNT=$(find ~/.helm -type f -name "cert.pem" | wc -l)
 KEYCNT=$(find ~/.helm -type f -name "key.pem" | wc -l)
 
-if [[ "${CERTCNT}" -eq "0" ]]; then
+if [[ "${CERTCNT}" -eq 0 ]]; then
   echo -e "Something went wrong with the cluster-config command.  Manually patching helm home with cert.pem"
   cp $(find /opt -path "*/cfc-certs/helm/*" -type f -name "admin.crt") ~/.helm/cert.pem
 fi
 
-if [[ "${KEYCNT}" -eq "0" ]]; then
+if [[ "${KEYCNT}" -eq 0 ]]; then
   echo -e "Something went wrong with the cluster-config command.  Manually patching helm home with key.pem"
   cp $(find /opt -path "*/cfc-certs/helm/*" -type f -name "admin.key") ~/.helm/key.pem
 fi
