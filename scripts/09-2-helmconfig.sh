@@ -6,17 +6,16 @@
 set -e
 set -u
 
-HELMVERSION=2.7.2
-curl -k -Lo /tmp/helm https://mycluster.icp:8443/helm-api/cli/linux-amd64/helm --header "Authorization: $(bx pr tokens | grep "Access token:" | cut -d' ' -f3- | sed -e 's/^[[:space:]]*//')"
-chmod +x /tmp/helm
-sudo mv /tmp/helm /usr/local/bin/helm
+HELMVERSION=2.9.1
+curl -k -Lo /tmp/helm-linux-amd64.tar.gz https://mycluster.icp:8443/api/cli/helm-linux-amd64.tar.gz --header "Authorization: $(cloudctl tokens | grep "Access token:" | cut -d' ' -f3- | sed -e 's/^[[:space:]]*//')"
+tar -zxf /tmp/helm-linux-amd64.tar.gz -C /tmp
+chmod +x /tmp/linux-amd64/helm
+sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
 
 helm init --client-only
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
-helm repo add ibmcase https://raw.githubusercontent.com/ibm-cloud-architecture/refarch-cloudnative-kubernetes/master/docs/charts/bluecompute-ce
 helm repo add ibmcase-spring https://raw.githubusercontent.com/ibm-cloud-architecture/refarch-cloudnative-spring/master/docs/charts/
 
-ibmcloud pr cluster-config $(bx pr clusters | awk 'FNR == 3 {print $1}') 
 CERTCNT=$(find ~/.helm -type f -name "cert.pem" | wc -l)
 KEYCNT=$(find ~/.helm -type f -name "key.pem" | wc -l)
 
