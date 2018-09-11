@@ -1,7 +1,7 @@
 #!/bin/bash
 # ----------------------------------------------------------------------------------------------------\\
 # Description:
-#   Setup and deploy Microclimate with persistence into IBM Cloud Private
+#   Setup and deploy WeaveWorks Scope into IBM Cloud Private
 # ----------------------------------------------------------------------------------------------------\\
 set -e
 
