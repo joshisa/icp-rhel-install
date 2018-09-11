@@ -8,13 +8,13 @@ cd /opt/ibm-cloud-private-${INCEPTION_VERSION}
 
 # Get kubectl
 # Append a -ee on the version number for Cloud Native Installs (e.g. v1.9.1-ee)
-sudo docker run -e LICENSE=accept --net=host -v /usr/local/bin:/data ibmcom/hyperkube:v1.10.0-ee cp /kubectl /data
+sudo docker run -e LICENSE=accept --net=host -v /usr/local/bin:/data ibmcom/icp-inception-amd64:3.1.0-ee cp /usr/local/bin/kubectl /data
 
 # Make config directory
 mkdir -p ~/.kube
 sudo cp /var/lib/kubelet/kubectl-config ~/.kube/config
-sudo cp /var/lib/kubelet/kubecfg.crt ~/.kube/kubecfg.crt
-sudo cp /var/lib/kubelet/kubecfg.key ~/.kube/kubecfg.key
+sudo cp /etc/cfc/conf/kubecfg.crt ~/.kube/kubecfg.crt
+sudo cp /etc/cfc/conf/kubecfg.key ~/.kube/kubecfg.key
 sudo chown -R $USER  ~/.kube/
 
 #Set kube config
