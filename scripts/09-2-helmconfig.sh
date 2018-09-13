@@ -15,6 +15,7 @@ sudo mv /tmp/linux-amd64/helm /usr/local/bin/helm
 helm init --client-only
 helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/stable/
 helm repo add ibmcase-spring https://raw.githubusercontent.com/ibm-cloud-architecture/refarch-cloudnative-spring/master/docs/charts/
+helm repo add --ca-file <(openssl s_client -showcerts -connect "mycluster.icp:8443" </dev/null 2>/dev/null|openssl x509 -outform PEM) --cert-file ~/.kube/kubecfg.crt --key-file ~/.kube/kubecfg.key mgmt-charts https://mycluster.icp:8443/mgmt-repo/charts
 
 CERTCNT=$(find ~/.helm -type f -name "cert.pem" | wc -l)
 KEYCNT=$(find ~/.helm -type f -name "key.pem" | wc -l)
