@@ -73,7 +73,7 @@ fi
 dockerRegistry='mycluster.icp'
 dockerRegistryPort='8500'
 user="$ICPUSER:$ICPPW"
-imagesFilter="default"
+imagesFilter="default/"
 
 # Detected only one argument.  Helps with message display.
 if [ $# -eq 1 ]; then
