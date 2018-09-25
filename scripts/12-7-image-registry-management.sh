@@ -95,7 +95,7 @@ do
 			NO_PROMPT=true
 			;;
 	        *)
-			if ! [[ "$1" =~ [^a-zA-Z0-9] ]]; then
+			if ! [[ "$1" =~ [^a-zA-Z0-9\/\\] ]]; then
                           #echo "VALID"
 			  echo -e "${harpoons}   Scanning IBM Cloud Private Image Registry for image names containing ${1}"
 			  imagesFilter="${1}"
