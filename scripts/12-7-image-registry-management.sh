@@ -133,7 +133,7 @@ for image in $images ; do
         # echo "${image}:${tag}"
         # get the digest of the image:tag
 	# docker-content-digest
-	digest=$(curl -H "Accept: application/vnd.docker.distribution.manifest.v2+json" -v --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/manifests/${tag}" 2>&1  | grep -e "docker-content-digest:*" | awk '{ sub(/\r/,"",$3) ; print $3 }')
+	digest=$(curl -H "Accept: application/vnd.docker.distribution.manifest.v2+json" -v --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/manifests/${tag}" 2>&1  | grep -i -e "docker-content-digest:*" | awk '{ sub(/\r/,"",$3) ; print $3 }')
 	if [ -z $digest ] ; then
             echo "${image}:${tag} not found"
 	else
