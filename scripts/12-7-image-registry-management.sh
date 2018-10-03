@@ -15,6 +15,12 @@
 #   Example:   ./12-7-image-registry-management.sh nameSpace/textString
 #    Result:   Will list all images matching nameSpace/textString filter
 #
+#   Example:   ./12-7-image-registry-management.sh :v3.1.3
+#    Result:   Will list all images matching tag filter (v3.1.3)
+#
+#   Example:   ./12-7-image-registry-management.sh nameSpace/textString:v3.1.3
+#    Result:   Will list all images matching nameSpace/textString filter AND tag filter (v3.1.3)
+#
 #   Example:   ./12-7-image-registry-management.sh nameSpace/textString --delete
 #    Result:   Will list AND delete all images matching nameSpace/textString filter after prompt
 #
@@ -74,6 +80,7 @@ dockerRegistry='mycluster.icp'
 dockerRegistryPort='8500'
 user="$ICPUSER:$ICPPW"
 imagesFilter="default/"
+tagsFilter="."
 
 # Detected only one argument.  Helps with message display.
 if [ $# -eq 1 ]; then
@@ -95,10 +102,13 @@ do
 			NO_PROMPT=true
 			;;
 	        *)
-			if ! [[ "$1" =~ [^a-zA-Z0-9\/\\] ]]; then
+			if ! [[ "$1" =~ [^a-zA-Z0-9\/\\\.\:\-] ]]; then
                           #echo "VALID"
 			  echo -e "${harpoons}   Scanning IBM Cloud Private Image Registry for image names containing ${1}"
-			  imagesFilter="${1}"
+                          case $1 in
+   			    (*:*) imagesFilter="${1%:*}" tagsFilter="${1##*:}";;
+   			    (*)   imagesFilter="$1";;
+			  esac
                         else
 	       		  echo "An invalid filter string (${1}) was provided. Only alphanumerics [0-9] [a-zA-Z] are permitted"
 			  exit;
@@ -126,14 +136,14 @@ for image in $images ; do
 
     # get the list of tags for each image
     TAG_TOKEN=$(curl --cacert $HOME/.kube/kubecfg.crt -u ${user} -ks "https://${dockerRegistry}:8443/image-manager/api/v1/auth/token?service=token-service&scope=repository:${image}:*" | jq -r '.token')
-    tags=$(curl --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/tags/list" | jq -r .tags[]?)
+    tags=$(curl --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/tags/list" | jq -r '.tags[]? | select(. | contains("'${tagsFilter}'")) ')
 
     for tag in $tags ; do
 
         # echo "${image}:${tag}"
         # get the digest of the image:tag
 	# docker-content-digest
-	digest=$(curl -H "Accept: application/vnd.docker.distribution.manifest.v2+json" -v --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/manifests/${tag}" 2>&1  | grep -i -e "docker-content-digest:*" | awk '{ sub(/\r/,"",$3) ; print $3 }')
+        digest=$(curl -H "Accept: application/vnd.docker.distribution.manifest.v2+json" -v --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/manifests/${tag}" 2>&1  | grep -i -e "docker-content-digest:*" | awk '{ sub(/\r/,"",$3) ; print $3 }')
 	if [ -z $digest ] ; then
             echo "${image}:${tag} not found"
 	else
@@ -152,8 +162,8 @@ if [ -z "${images}" ]; then
     echo -e "${fail}   No images matching provided filterString (${imagesFilter}) found"
 else
     if [ "${HAS_DELETE}" = true ]; then
-        echo -e "${beers}   Congrats!  All images matching chosen filterString (${imagesFilter}) have been deleted"
+        echo -e "${beers}   Congrats!  All images matching chosen filterString (${imagesFilter} and ${tagsFilter}) have been deleted"
     else
-        echo -e "${beers}   Congrats!  All images matching chosen filterString (${imagesFilter}) have been retrieved"
+        echo -e "${beers}   Congrats!  All images matching chosen filterString (${imagesFilter} and ${tagsFilter}) have been retrieved"
     fi
 fi
