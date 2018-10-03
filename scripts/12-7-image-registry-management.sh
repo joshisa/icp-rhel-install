@@ -67,6 +67,8 @@ clear
 # Exit the shell script with a status of 1 using exit 1 command.
 [ $# -gt 2 ] && { echo -e "${crossbones}   Error.  Too many arguments.\n    Usage: $0 [text] [--delete, -d] [--no-prompt]"; exit 1; }
 
+[ ! -f $HOME/.kube/kubecfg.crt ] && { echo -e "${crossbones}   Error.  Missing $HOME/.kube/kubecfg.crt .  This file can be found on the Master Node at /etc/cfc/conf/kubecfg.crt"; exit 1; }
+
 echo -e "${tools}   Welcome to the image management registry script for an IBM Cloud Private Cluster v2 Docker Registry"
 
 if [ "${OS}" == "rhel" ]; then
@@ -149,7 +151,7 @@ for image in $images ; do
 	else
             if [ "${HAS_DELETE}" = true ]; then
                 echo -e "${litter}  Deleting ${image}:${tag}:${digest}"
-                #    curl -XDELETE -w "[%{http_code}]\n" --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/manifests/${digest}"
+                curl -XDELETE -w "[%{http_code}]\n" --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/manifests/${digest}"
 	    else
 	        echo "${image}:${tag}"
 	    fi
