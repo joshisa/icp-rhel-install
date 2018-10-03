@@ -15,6 +15,12 @@
 #   Example:   ./12-7-image-registry-management.sh nameSpace/textString
 #    Result:   Will list all images matching nameSpace/textString filter
 #
+#   Example:   ./12-7-image-registry-management.sh :v3.1.3
+#    Result:   Will list all images matching tag filter (v3.1.3)
+#
+#   Example:   ./12-7-image-registry-management.sh nameSpace/textString:v3.1.3
+#    Result:   Will list all images matching nameSpace/textString filter AND tag filter (v3.1.3)
+#
 #   Example:   ./12-7-image-registry-management.sh nameSpace/textString --delete
 #    Result:   Will list AND delete all images matching nameSpace/textString filter after prompt
 #
@@ -62,7 +68,6 @@ clear
 [ $# -gt 2 ] && { echo -e "${crossbones}   Error.  Too many arguments.\n    Usage: $0 [text] [--delete, -d] [--no-prompt]"; exit 1; }
 
 [ ! -f $HOME/.kube/kubecfg.crt ] && { echo -e "${crossbones}   Error.  Missing $HOME/.kube/kubecfg.crt .  This file can be found on the Master Node at /etc/cfc/conf/kubecfg.crt"; exit 1; }
-
 
 echo -e "${tools}   Welcome to the image management registry script for an IBM Cloud Private Cluster v2 Docker Registry"
 
@@ -149,7 +154,7 @@ for image in $images ; do
 	else
             if [ "${HAS_DELETE}" = true ]; then
                 echo -e "${litter}  Deleting ${image}:${tag}:${digest}"
-                #    curl -XDELETE -w "[%{http_code}]\n" --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/manifests/${digest}"
+                curl -XDELETE -w "[%{http_code}]\n" --cacert $HOME/.kube/kubecfg.crt -ks -H "Authorization: Bearer ${TAG_TOKEN}" "https://${dockerRegistry}:${dockerRegistryPort}/v2/${image}/manifests/${digest}"
 	    else
 	        echo "${image}:${tag}"
 	    fi
