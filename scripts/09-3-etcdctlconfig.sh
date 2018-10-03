@@ -4,8 +4,7 @@
 #  Tested on Ubuntu 16.04 x86 system.
 #
 
-set -e
-set -u
+source 00-variables.sh
 shopt -s expand_aliases
 
 ETCDCTLVERSION=3.3.5
@@ -18,12 +17,19 @@ chmod +x /usr/local/bin/etcdctl
 sudo rm -rf /tmp/etcd-v${ETCDCTLVERSION}-linux-amd64
 sudo rm /tmp/etcdctl.tar.gz
 
-ip=$(ps -ef | grep -Po "(?<=advertise-client-urls\=)https:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:4001");
+if [ ! -f /etc/cfc/conf/etcd/client.pem ]; then
+  # Boot (Bastion) Node approach
+  sudo mkdir -p /etc/cfc/conf/etcd
+  scp ${SSH_USER}@$MASTER_IP:/etc/cfc/conf/etcd/client.pem /etc/cfc/conf/etcd/client.pem
+  scp ${SSH_USER}@$MASTER_IP:/etc/cfc/conf/etcd/client-key.pem /etc/cfc/conf/etcd/client-key.pem
+  scp ${SSH_USER}@$MASTER_IP:/etc/cfc/conf/etcd/ca.pem /etc/cfc/conf/etcd/ca.pem
+fi
+
+ip=$(ssh ${SSH_USER}@${MASTER_IP} 'ps -ef | grep -Po "(?<=advertise-client-urls\=)https:\/\/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}:4001"');
 
 echo ""
 echo "${ip} is your etcd endpoint(s)"
 echo ""
-
 echo "Executing command:"
 echo "    etcdctl --cert-file=/etc/cfc/conf/etcd/client.pem --key-file=/etc/cfc/conf/etcd/client-key.pem --ca-file=/etc/cfc/conf/etcd/ca.pem --endpoints=${ip} cluster-health"
 echo ""
