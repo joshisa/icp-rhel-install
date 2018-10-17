@@ -51,8 +51,6 @@ tools='\xE2\x9A\x92'
 present='\xF0\x9F\x8E\x81'
 #############
 
-JSON=$(kubectl get cm registration-json -n kube-system -o json | jq -j '.data."platform-oidc-registration.json"')
-
 clear
 
 # Display an error message if more than two arguments/flags exist
@@ -66,6 +64,7 @@ else
   sudo apt-get -qq install jq -y
 fi
 
+JSON=$(kubectl get cm registration-json -n kube-system -o json | jq -j '.data."platform-oidc-registration.json"')
 JSON=$(echo -e "${JSON}" | jq --arg allow_regexp_redirects true '. + {allow_regexp_redirects: $allow_regexp_redirects}')
 
 for var in "$@"
