@@ -3,6 +3,9 @@
 # Description:
 #   A basic script port to change your cluster url on an ICP Cluster
 #
+# Resolves:
+#   CWOAU0062E: The OAuth service provider could not redirect the request because the redirect URI was not valid. Contact your system administrator to resolve the problem.
+#
 #   Options:
 #     None
 #
