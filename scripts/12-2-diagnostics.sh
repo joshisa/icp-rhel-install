@@ -12,9 +12,10 @@ echo -e "${tools}${Cyan}  Gathering information about Cluster Nodes${no_color}"
 NODEOVERVIEW=$(kubectl get nodes -o wide)
 NODEHEALTH=$(echo "${NODEOVERVIEW}" | grep NotReady | wc -l)
 ENTROPY_THRESHOLD=1200
+ICPVERSION=$(cat /opt/ibm/cfc/version)
 
 echo ""
-echo -e "${eyes}  Inspecting $(uname -n)..."
+echo -e "${eyes}  Inspecting $(uname -n) with ICP Version ${ICPVERSION} ..."
 echo -e "${tools}  $(uname -a)"
 if [ $(sysctl kernel.random.entropy_avail | awk '{print $3}') -lt "${ENTROPY_THRESHOLD}" ]; then
   echo -e "${crossbones}${Red}  ALERT! ${no_color} Your available entropy appears to be ${Red}low ${no_color}[e.g. < ${ENTROPY_THRESHOLD}]"
