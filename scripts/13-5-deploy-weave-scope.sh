@@ -16,7 +16,7 @@ kubectl apply -f "https://cloud.weave.works/k8s/scope.yaml?k8s-version=$(kubectl
 kubectl patch ClusterRoles weave-scope -n weave -p '{"rules":[{"apiGroups":["extensions"],"resourceNames":["ibm-privileged-psp"],"resources":["podsecuritypolicies"],"verbs":["use"]}]}'
 kubectl patch ClusterRoleBinding weave-scope -n weave -p '{"subjects":[{"kind":"ServiceAccount","name":"weave-scope","namespace":"weave"},{"kind":"ServiceAccount","name":"default","namespace":"weave"}]}'
 kubectl delete pods $(kubectl get pods -n weave --no-headers | grep weave-scope-app | awk '{print $1}') -n weave
-kubectl delete pods $(kubectl get pods -n weave --no-headers | grep weave-scope-client | awk '{print $1}') -n weave
+kubectl delete pods $(kubectl get pods -n weave --no-headers | grep weave-scope-cluster-agent | awk '{print $1}') -n weave
 
 ./10-waiter.sh "pods" "weave" "0/1"
 
