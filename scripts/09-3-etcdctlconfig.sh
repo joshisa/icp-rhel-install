@@ -7,7 +7,7 @@
 source 00-variables.sh
 shopt -s expand_aliases
 
-ETCDCTLVERSION=3.3.5
+ETCDCTLVERSION=3.3.12
 curl -Lo /tmp/etcdctl.tar.gz https://github.com/coreos/etcd/releases/download/v${ETCDCTLVERSION}/etcd-v${ETCDCTLVERSION}-linux-amd64.tar.gz
 tar -zxf /tmp/etcdctl.tar.gz -C /tmp
 sudo mv /tmp/etcd-v${ETCDCTLVERSION}-linux-amd64/etcdctl /usr/local/bin/etcdctl
