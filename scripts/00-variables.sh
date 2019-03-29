@@ -100,13 +100,11 @@ fi
 export NUM_VA=${#VA_IPS[@]}
 
 
-export ARCH="$(uname -m)"
-if [ "${ARCH}" != "x86_64" ]; then
-  export INCEPTION_TAG="-${ARCH}"
-fi
+export ARCH="$(uname -m | sed 's/x86_64/amd64/g')"
+export INCEPTION_TAG="-$(uname -m | sed 's/x86_64/amd64/g')"
 
 export INCEPTION_TAR_FILEPATH="/home/user/some.tar.gz"
-export INCEPTION_VERSION="2.1.0.3-ee"
+export INCEPTION_VERSION="3.1.2-ee"
 
 # Get OS ID
 if [ -f /etc/os-release ]; then
