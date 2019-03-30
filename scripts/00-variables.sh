@@ -101,7 +101,7 @@ export NUM_VA=${#VA_IPS[@]}
 
 
 export ARCH="$(uname -m | sed 's/x86_64/amd64/g')"
-export INCEPTION_TAG="-$(uname -m | sed 's/x86_64/amd64/g')"
+export INCEPTION_TAG="$(uname -m | sed 's/x86_64/amd64/g')"
 
 export INCEPTION_TAR_FILEPATH="/home/user/some.tar.gz"
 export INCEPTION_VERSION="3.1.2-ee"
