@@ -66,6 +66,9 @@ fi
 
 export NUM_WORKERS=${#WORKER_IPS[@]}
 
+export GLWORKER_HOSTNAMES=("om-gl-worker-1" "om-gl-worker-2" "om-gl-worker-3")
+export NUM_GLWORKERS=${#GLWORKER_HOSTNAMES[@]}
+
 # PROXY_IPS[0] should be the same worker at PROXY_HOSTNAMES[0]
 export PROXY_IPS=("x.x.x.x")
 export PROXY_HOSTNAMES=("om-demo-master")
