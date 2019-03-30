@@ -4,7 +4,7 @@ source 00-variables.sh
 
 if [[ -z "${INCEPTION_TAR_FILEPATH}" ]]; then
   sudo service docker start
-  sudo docker pull ibmcom/icp-inception${INCEPTION_TAG}:${INCEPTION_VERSION}
+  sudo docker pull ibmcom/icp-inception-${INCEPTION_TAG}:${INCEPTION_VERSION}
 else
   echo "A local ICP Tar File has been provided.  We will load the installation from ${INCEPTION_TAR_FILEPATH}"
   echo "Patience will be required ... the loading of the tar file can take while.  Go grab a cup of coffee or a beer!"
@@ -19,7 +19,7 @@ fi
   sudo chown $USER /opt/ibm-cloud-private-${INCEPTION_VERSION}
   cd /opt/ibm-cloud-private-${INCEPTION_VERSION}
 
-  sudo docker run -v $(pwd):/data -e LICENSE=accept ibmcom/icp-inception-amd64${INCEPTION_TAG}:${INCEPTION_VERSION} cp -r cluster /data
+  sudo docker run -v $(pwd):/data -e LICENSE=accept ibmcom/icp-inception-${INCEPTION_TAG}:${INCEPTION_VERSION} cp -r cluster /data
 
 if [[ -n "${INCEPTION_TAR_FILEPATH}" ]]; then
   echo "Copying ICP Tar File into cluster/images directory"
