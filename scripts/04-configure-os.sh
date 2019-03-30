@@ -37,6 +37,20 @@ for ((i=0; i < $NUM_WORKERS; i++)); do
 
 done
 
+echo "Looping through gluster workers to prepare them ..."
+for ((i=0; i < $NUM_GLWORKERS; i++)); do
+  # Install docker & python on worker
+  if [ "${OS}" == "rhel" ]; then
+    echo "Installing for RHEL ...."
+    ssh ${SSH_USER}@${GLWORKER_HOSTNAMES[i]} "sudo modprobe dm_thin_pool"
+    ssh ${SSH_USER}@${GLWORKER_HOSTNAMES[i]} "echo dm_thin_pool | sudo tee -a /etc/modules-load.d/dm_thin_pool.conf"
+  else # ubuntu
+    echo "Installing for Ubuntu ...."
+    ssh ${SSH_USER}@${GLWORKER_HOSTNAMES[i]} "sudo modprobe dm_thin_pool"
+    ssh ${SSH_USER}@${GLWORKER_HOSTNAMES[i]} "echo dm_thin_pool | sudo tee -a /etc/modules"
+  fi
+done
+
 for ((i=0; i < $NUM_PROXIES; i++)); do
   # Disable SELinux
   if [ "${OS}" == "rhel" ]; then
